@@ -1,0 +1,36 @@
+version: '2'
+
+volumes:
+  postgres_data_local: {}
+  postgres_backup_local: {}
+  sqlserver_local: {}
+
+services:
+  django: &django
+    build:
+      context: .
+      dockerfile: ./compose/local/django/Dockerfile
+    image: dbasurveillance_local_django
+    depends_on:
+      - mssql
+    volumes:
+      - .:/app
+    env_file:
+      - ./.envs/.local/.django
+      - ./.envs/.local/.postgres
+    ports:
+      - "8000:8000"
+    command: /start.sh
+
+
+  mssql:
+    image: microsoft/mssql-server-linux
+    environment:
+      SA_PASSWORD: "g0lfc@pture"
+      ACCEPT_EULA: "Y"
+    ports:
+      - "1433:1433"
+    volumes:
+      - sqlserver_local:/var/opt/mssql/
+
+

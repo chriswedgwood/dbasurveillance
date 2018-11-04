@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% load static i18n %}
+
+
+{% block content %}
+<div id="tester" style="width:1200px;height:800px;"></div>
+{% endblock %}
+ {% block extra_javascript %}
+<script>
+var endpoint = '/plots'
+var articleData = articleLabels = []
+
+$.ajax({
+    method: "GET",
+    url: endpoint,
+    success: function(data){
+
+        articleChart(data);
+
+     console.log(data)
+    },
+    error: function(error_data){
+        console.log("error")
+        console.log(error_data)
+    },
+})
+
+function articleChart(data){
+
+ Plotly.newPlot('tester', data);
+}
+</script>
+{% endblock %}
+
+
+

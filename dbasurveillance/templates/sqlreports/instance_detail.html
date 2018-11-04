@@ -1,0 +1,531 @@
+{% extends "base.html" %}
+{% load static i18n %}
+{% load crispy_forms_tags %}
+
+
+{% block content %}
+  <div class="container">
+
+
+
+    <h2>{{ object.name }}</h2>
+
+
+<form id="dates_form" method="get">
+  <div class="row">
+  {% for field in ParentForm.visible_fields %}
+   <div class="col"> {{ field.errors }}
+    {{ field|as_crispy_field }}
+    {{ field.help_text }}
+    </div>
+  {% endfor %}
+  </div>
+    <input type="submit" value="Submit">
+</form>
+
+
+    <h2>CPU</h2>
+    <div id="cpu_chart" style="width:1200px;height:800px;"></div>
+
+
+    <h2>SQL Counters By Instance</h2>
+
+    <form id="sql_counters_form" action="" method="post">
+      {% csrf_token %}
+
+      <div class="col-lg-3"><select id="sqlCounterOptions"
+                                    name="multiselect[]" multiple="multiple">
+      {% for category,counters in counters_by_category.items %}
+                <optgroup class="group-1" label="{{ category }}">
+                {% for counter in counters %}
+                <option value="{{ counter }}" selected="selected">{{ counter }}</option>
+                  {% endfor %}
+          </optgroup>
+
+      {% endfor %}
+
+
+
+      </select></div>
+      <input type="submit" value="Submit"/>
+    </form>
+
+    <div id="sql_counters_chart" style="width:1200px;height:800px;"></div>
+
+
+    <form id="virtual_form" action="" method="post">
+      {% csrf_token %}
+      <h2>Virtual File Stats</h2>
+      <div class="row">
+
+
+        <div class="col-lg-3"><select id="sqlDatabaseOptions"
+                                      name="multiselect[]" multiple="multiple">
+          {% for database in databases %}
+            <option value="{{ database.database }}" selected="selected">{{ database.database }}</option>
+          {% endfor %}
+
+        </select></div>
+        <div class="col-lg-3"><select id="sqlVirtualFileStatsOptions"
+                                      name="multiselect2[]" multiple="multiple">
+          {% for stat in virtual_file_stats %}
+            <option value="{{ stat }}" selected="selected">{{ stat }}</option>
+          {% endfor %}
+
+        </select></div>
+      </div>
+
+
+      <input type="submit" value="Submit"/>
+    </form>
+
+    <div id="virtual_file_stats_chart" style="width:1200px;height:800px;"></div>
+
+    <!-- wait_stats_chart-->
+    <h2>Wait Stats</h2>
+    <div id="wait_stats_chart" style="width:1200px;height:800px;"></div>
+
+  </div>
+
+
+  <h2>Stored Procedure Pare performance</h2>
+  <form id="procedure_form" action="" method="post">
+    {% csrf_token %}
+    <h2>Virtual File Stats</h2>
+    <div class="row">
+      <div class="col-lg-3"><select id="sqlProcedureDatabaseOptions"
+                                    class="selectpicker" name="database[]">
+        {% for database in databases %}
+          <option value="{{ database.database }}">{{ database.database }}</option>
+        {% endfor %}
+
+      </select></div>
+      <div class="col-lg-3"><select class="selectpicker" id="sqlStoredProcedureOptions" name="procedure[]">
+        {% for procedure in procedures %}
+          <option value="{{ procedure.name }}">{{ procedure.name }}</option>
+        {% endfor %}
+      </select></div>
+    </div>
+
+
+    <input type="submit" value="Submit"/>
+  </form>
+  <div id="procedure_stats_chart" style="width:1200px;height:800px;"></div>
+
+  </div>
+
+
+
+
+  <!-- Modal -->
+  <div class="container">
+    <div class="row">
+      <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+           aria-hidden="true">
+
+        <div class="modal-dialog modal-lg" role="document">
+          <div class="modal-content">
+            <div id="who_is_active_table" class="modal-body">
+              <div class="row">
+                <div class="col">Query Summary for datetime</div>
+              </div>
+              <div class="row">
+                <div class="col">Query 1</div>
+              </div>
+              <div class="row">
+                <div class="col">CaptureDate</div>
+                <div class="col">Count</div>
+              </div>
+              <div class="row">
+                <div class="col">2018-54-67 12:35:00</div>
+                <div class="col">84</div>
+              </div>
+              <div class="row">
+                <div class="col">Parent_Sql</div>
+                <div class="col">SELECT * FROM dbo.Tablename</div>
+                <div id="parent_sql_more" class="col">More..</div>
+                <div id="parent_sql_less" class="col d-none">Less..</div>
+              </div>
+              <div id="parent_sql" class="row d-none">
+                <div class="col">this is hidden</div>
+              </div>
+              <div class="row">
+                <div class="col">Sql</div>
+                <div class="col">SELECT * FROM dbo.Tablename</div>
+                <div id="sql_more" class="col">More..</div>
+                <div id="sql_less" class="col d-none">Less..</div>
+              </div>
+              <div id="sql" class="row d-none">
+                <div class="col">this is hidden</div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+{% endblock content %}
+
+
+{% block extra_head %}
+  {{ ParentForm.media }}
+    {% endblock %}
+
+
+{% block extra_javascript %}
+  <script>
+    //cpufeed
+    var dates = $('#dates_form').serialize()
+    $.ajax({
+      method: "GET",
+      url: '/instances/cpufeed/{{ object.key }}/',
+      data: dates,
+      success: function (data) {
+        cpuChart(data);
+        bindModalClickEvent('cpu_chart');
+      },
+      error: function (error_data) {
+        console.log("error")
+        console.log(error_data)
+      },
+    })
+    //virtualfilestats
+    $.ajax({
+      method: "GET",
+      url: '/instances/virtualfilestats/{{ object.key }}/',
+      success: function (data) {
+
+        virtualFileStatsChart(data);
+
+        bindModalClickEvent('virtual_file_stats_chart');
+
+
+      },
+      error: function (error_data) {
+        console.log("error")
+        console.log(error_data)
+      },
+    })
+    //sqlcounters
+    $.ajax({
+      method: "GET",
+      url: '/instances/sqlcounters/{{ object.key }}/',
+      success: function (data) {
+
+        sqlCountersChart(data);
+
+        bindModalClickEvent('sql_counters_chart');
+
+
+      },
+      error: function (error_data) {
+        console.log("error")
+        console.log(error_data)
+      },
+    })
+
+    //waitstats
+    $.ajax({
+      method: "GET",
+      url: '/instances/waitstats/{{ object.key }}/',
+      success: function (data) {
+
+        waitStatsChart(data);
+
+        bindModalClickEvent('wait_stats_chart');
+
+
+      },
+      error: function (error_data) {
+        console.log("error")
+        console.log(error_data)
+      },
+    })
+
+    function bindModalClickEvent(chart) {
+      var myPlot = document.getElementById(chart)
+      var instanceKey = {{ object.key }}
+        myPlot.on('plotly_click', function (data) {
+          var pts = '';
+          var whoIsActiveDateTime = '';
+          for (var i = 0; i < data.points.length; i++) {
+            pts = 'x = ' + data.points[i].x + '\ny = ' +
+              data.points[i].y.toPrecision(4) + '\n\n';
+            whoIsActiveDateTime = data.points[i].x;
+          }
+          createWhoIsActiveChart(whoIsActiveDateTime, instanceKey);
+
+
+        });
+    }
+
+    function cpuChart(data) {
+
+      Plotly.newPlot('cpu_chart', data);
+    }
+
+    function sqlCountersChart(data) {
+
+      Plotly.newPlot('sql_counters_chart', data);
+
+    }
+
+    //waitstatschart
+    function waitStatsChart(data) {
+
+      var layout = {barmode: 'stack'};
+
+      Plotly.newPlot('wait_stats_chart', data, layout);
+
+    }
+
+    //procedure stats chart
+    function procedureStatsChart(data) {
+
+      Plotly.newPlot('procedure_stats_chart', data);
+    }
+
+    function virtualFileStatsChart(data) {
+
+      Plotly.newPlot('virtual_file_stats_chart', data);
+    }
+
+    $('#sql_counters_form').submit(function (event) {
+      // You gotta include the csrf_token in your post data
+      event.preventDefault();
+      var dates = $('#dates_form').serialize()
+      var sql_counters = $('#sql_counters_form').serialize()
+      $.ajax({
+        type: 'POST',
+        url: '/instances/sqlcounters/{{ object.key }}/',
+        dataType: 'json',
+        data: dates +'&'+ sql_counters, // serialize all your
+        success: function (data, textStatus) {
+          sqlCountersChart(data);
+
+          bindModalClickEvent('sql_counters_chart');
+
+        },
+        error: function (xhr, status, e) {
+          alert(status, e);
+        }
+      });
+    });
+
+    $('#virtual_form').submit(function (event) {
+      // You gotta include the csrf_token in your post data
+      event.preventDefault();
+      $.ajax({
+        type: 'POST',
+        url: '/instances/virtualfilestats/{{ object.key }}/',
+        dataType: 'json',
+        data: $('#virtual_form').serialize(), // serialize all your
+        success: function (data, textStatus) {
+          virtualFileStatsChart(data);
+
+          bindModalClickEvent('virtual_file_stats_chart');
+
+        },
+        error: function (xhr, status, e) {
+          alert(status, e);
+        }
+      });
+    });
+
+    //procedure form submit
+    $('#procedure_form').submit(function (event) {
+      // You gotta include the csrf_token in your post data
+      console.log($(this).serialize());
+      event.preventDefault();
+      $.ajax({
+        type: 'POST',
+        url: '/instances/procedure_stats/',
+        dataType: 'json',
+        data: $('#procedure_form').serialize(), // serialize all your
+        success: function (data, textStatus) {
+
+          procedureStatsChart(data);
+
+
+        },
+        error: function (xhr, status, e) {
+          alert(status, e);
+        }
+      });
+    });
+
+    function appendHtml(element, index, array) {
+      index += 1;
+      tblSomething += '<div class="row">\n' +
+        '               <div class="col"> <table style="width:100%">\n' +
+        '  <tr>\n' +
+        '    <th>Count</th>\n' +
+        '    <th>Tempdb</th> \n' +
+        '    <th>Reads</th>\n' +
+        '    <th>Writes</th>\n' +
+        '    <th>Physical Reads</th>\n' +
+        '    <th>Blocked Sessions</th>\n' +
+        '  </tr>\n' +
+        '  <tr>\n' +
+        '    <td>' + element[3] + '</td>\n' +
+        '    <td>' + element[4] + '</td>\n' +
+        '    <td>' + element[5] + '</td>\n' +
+        '    <td>' + element[6] + '</td>\n' +
+        '    <td>' + element[7] + '</td>\n' +
+        '    <td>' + element[8] + '</td>\n' +
+        '  </tr>\n'
+        + '</table>\n' +
+        '             </div> </div>\n' +
+        '              <div class="row">\n' +
+        '                <div class="col-md-3">Parent_Sql</div>\n' +
+        '                <div id="parent_sql_min_' + index + '" class="col-md-15"><code class="language-sql">' + element[0].substr(0, 60) + '</code></div>\n' +
+        '                <div id="parent_sql_more_' + index + '" class="col more"><a class="btn btn-primary" role="button">More</a></div>\n' +
+        '                <div id="parent_sql_less_' + index + '" class="col less d-none"><a class="btn btn-primary" role="button">Less</a></div>\n' +
+        '              </div>\n' +
+        '              <div id="parent_sql_' + index + '" class="row d-none">\n' +
+        '                <div class="col" ><pre><code class="language-sql" style="white-space: pre-wrap;">' + element[0] + '</code></pre></div>\n' +
+        '              </div>\n' +
+        '              <div class="row">\n' +
+        '                <div class="col-md-3">Sql</div>\n' +
+        '                <div id="sql_min_' + index + '" class="col-md-15"><code class="language-sql">' + element[1].substr(1, 60) + '</code></div>\n' +
+        '                <div id="sql_more_' + index + '" class="col more"><a class="btn btn-primary" role="button">More</a></div>\n' +
+        '                <div id="sql_less_' + index + '" class="col less d-none"><a class="btn btn-primary" role="button">Less</a></div>\n' +
+        '              </div>\n' +
+        '              <div id="sql_' + index + '"class="row d-none">\n' +
+        '                <div class="col" ><pre><code class="language-sql" style="white-space: pre-wrap;">' + element[1] + '</code></pre></div>\n' +
+        '              </div>\n' +
+        '            </div>';
+
+
+      $('#who_is_active_table').html(tblSomething);
+
+      Prism.highlightAll();
+      $(".more").click(function () {
+        var sql_id = '#' + this.id.replace('_more', '');
+        var less_id = '#' + this.id.replace('more', 'less');
+        var more_id = '#' + this.id;
+        var min_id = '#' + this.id.replace('_more', '_min');
+        $(sql_id).removeClass('d-none');
+        $(more_id).addClass('d-none');
+        $(less_id).removeClass('d-none');
+        // $(min_id).addClass('d-none');
+      });
+
+      $(".less").click(function () {
+
+        var sql_id = '#' + this.id.replace('_less', '');
+        var more_id = '#' + this.id.replace('less', 'more');
+        var less_id = '#' + this.id;
+        var min_id = '#' + this.id.replace('_less', '_min');
+        $(sql_id).addClass('d-none');
+        $(more_id).removeClass('d-none');
+        $(less_id).addClass('d-none');
+        //  $(min_id).removeClass('d-none');
+
+
+      });
+
+
+      $('#exampleModal').modal('show');
+    }
+
+    function createWhoIsActiveChart(whoDateTime, instanceKey) {
+
+      args = {'date': whoDateTime, 'instance': instanceKey}
+
+      $.ajax({
+        type: 'GET',
+        url: '/instances/whoisactive/',
+        dataType: 'json',
+        data: args,
+        success: function (data, textStatus) {
+          tblSomething = '';
+          tblSomething += '<div class="row"><div class="col">Query Summary for ' + data[0][0][2] + '</div></div>';
+          data[0].forEach(appendHtml);
+
+        }
+      });
+    }
+
+
+    $(document).ready(function () {
+
+      $('#sqlCounterOptions').multiselect({
+        includeSelectAllOption: true
+      });
+
+      $('#sqlDatabaseOptions').multiselect({
+        includeSelectAllOption: true
+      });
+
+      $('#sqlVirtualFileStatsOptions').multiselect({
+        includeSelectAllOption: true
+      });
+      $('#sqlCountersInstanceAreaOptions').multiselect({
+        includeSelectAllOption: true
+      });
+
+      /*$('#sqlProcedureDatabaseOptions').multiselect({
+         includeSelectAllOption: true,
+          onChange: function(option, checked, select) {
+                 alert('Changed option ' + $(option).val() + '.');
+             }
+       });*/
+
+      /*
+            $('#sqlStoredProcedureOptions').multiselect({
+              includeSelectAllOption: true,
+
+            });
+      */
+
+      $('#sqlProcedureDatabaseOptions').on('change', function (e) {
+        console.log(this.value,
+          this.options[this.selectedIndex].value,
+          $(this).find("option:selected").val(),);
+
+        $.ajax({
+          method: "GET",
+          url: '/instances/storedprocs_by_db/{{ object.key }}?database_name=' + this.value,
+          success: function (data) {
+            console.log(data);
+            $('#sqlStoredProcedureOptions').html(data);
+          },
+          error: function (error_data) {
+            console.log("error")
+            console.log(error_data)
+          },
+        })
+
+      });
+      //InstanceArea onChange
+      $('#sqlCountersInstanceAreaOptions').on('change', function (e) {
+
+
+        $.ajax({
+          method: "POST",
+          url: '/instances/sql_counters_by_area/',
+          data: $('#sql_counters_form').serialize(),
+          success: function (data) {
+            console.log(data);
+            $('#sqlCounterOptions').html(data);
+            $('#sqlCounterOptions').multiselect('rebuild');
+          },
+          error: function (error_data) {
+            console.log("error")
+            console.log(error_data)
+          },
+        })
+
+      });
+    })
+
+
+  </script>
+{% endblock %}
