@@ -18,9 +18,11 @@
     "@babel/preset-react": "^7.0.0",
     "babel-loader": "^8.0.4",
     "babel-plugin-transform-class-properties": "^6.24.1",
+    "plotly.js": "^1.42.2",
     "prop-types": "^15.6.2",
     "react": "^16.6.0",
     "react-dom": "^16.6.0",
+    "react-plotly.js": "^2.2.0",
     "weak-key": "^1.0.1",
     "webpack": "^4.24.0",
     "webpack-cli": "^3.1.2"
