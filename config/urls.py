@@ -19,7 +19,7 @@ urlpatterns = [
                   # User management
                   path("plots/",include("dbasurveillance.plots.urls", namespace="plots"),),
                   path("instances/", include("dbasurveillance.sqlreports.urls", namespace="sqlreports"),),
-                  path("api/", include("dbasurveillance.baselinedata.urls", namespace="baselinedata-api"),),
+                  path("api/", include("dbasurveillance.api.urls", namespace="baselinedata-api"), ),
               ] + static(
     settings.MEDIA_URL, document_root=settings.MEDIA_ROOT
 )

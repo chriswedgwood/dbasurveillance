@@ -43,16 +43,17 @@ DATABASES = {
     'default': {
         'ENGINE': 'sql_server.pyodbc',
         'NAME': 'DBADW',
-        'USER': 'sa',
-        'PASSWORD': 'g0lfc@pture',
-        'HOST': 'mssql',
-        'PORT': '1433',
+        'USER': 'dbadw',
+        'PASSWORD': 'dbadw',
+        'HOST': 'localhost\sql2017',
+        'PORT': '1436',
 
         'OPTIONS': {
             'driver': 'ODBC Driver 13 for SQL Server',
         },
     },
 }
+print(DATABASES)
 # URLS
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#root-urlconf
@@ -85,7 +86,7 @@ LOCAL_APPS = [
     'dbasurveillance.users.apps.UsersAppConfig',
     # Your stuff: custom apps go here
     'dbasurveillance.sqlreports',
-    'dbasurveillance.baselinedata',
+    'dbasurveillance.api',
     'frontend',
     'leads',
 
