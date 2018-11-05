@@ -1,11 +1,12 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import DataProvider from "./DataProvider";
-import Table from "./Table";
+import Graph from "./Graph";
+
 
 const App = () => (
-  <DataProvider endpoint="api/lead/"
-                render={data => <Table data={data} />} />
+  <DataProvider endpoint="api/cpu/"
+                render={data => <Graph data={data} />} />
 );
 
 const wrapper = document.getElementById("app");

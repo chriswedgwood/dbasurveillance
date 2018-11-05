@@ -9,6 +9,7 @@ const Graph = ({ data }) =>
     <p>Nothing to show</p>
   ) : ( <Plot
         data={data}
+        layout={ {width: 1000, height: 800, title: 'A Fancy Plot'}}
       />
   );
 
