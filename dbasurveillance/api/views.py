@@ -6,12 +6,13 @@ from django.views import View
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import generics
-
 from dbasurveillance.sqlreports.views import unpack_dates
 from .models import SqlCounter
 from .serializers import SqlCounterSerializer
 from django.http import JsonResponse
 import pandas as pd
+conn = pyodbc.connect(settings.PANDAS_CONNECTION_STRING)
+
 
 class SqlCounterList(generics.ListAPIView):
     queryset = SqlCounter.objects.all()
@@ -22,9 +23,10 @@ class SqlCounterDetail(generics.RetrieveAPIView):
     queryset = SqlCounter.objects.all()
     serializer_class = SqlCounterSerializer
 
+
 def return_data_frame_from_procedure(request, stored_procedure):
     frames = []
-    conn = pyodbc.connect(settings.PANDAS_CONNECTION_STRING)
+
     date_ranges = unpack_dates(request)
     sp_call = '{ CALL '+stored_procedure+' (?,?,?,?)}'
     for i, date_range in enumerate(date_ranges):
