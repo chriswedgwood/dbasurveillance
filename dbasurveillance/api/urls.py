@@ -8,7 +8,7 @@ app_name = "baselinedata-api"
 urlpatterns = [
     path('', views.SqlCounterList.as_view()),
     path('<int:pk>/', views.SqlCounterDetail.as_view()),
-    path('cpu/', views.CpuView.as_view())
+    path('cpu/<int:instance_key>', views.CpuView.as_view())
 ]
 
 

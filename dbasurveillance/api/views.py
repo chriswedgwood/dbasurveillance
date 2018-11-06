@@ -40,10 +40,9 @@ def return_data_frame_from_procedure(request, stored_procedure):
 
 class CpuView(View):
 
-    def get(self, request):
+    def get(self, request, instance_key):
         data = []
         frames = []
-        instance_key = 1
         conn = pyodbc.connect(settings.PANDAS_CONNECTION_STRING)
         date_ranges = unpack_dates(request)
         sp_call = '{ CALL ' + 'CpuDataByTimeFrame' + ' (?,?,?,?)}'
