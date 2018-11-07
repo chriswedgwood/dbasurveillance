@@ -1,1 +1,1 @@
-import Search from "./components/Search";
+import DashBoard from "./components/DashBoard";
