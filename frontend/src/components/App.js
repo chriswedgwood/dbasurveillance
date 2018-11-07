@@ -3,6 +3,7 @@ import ReactDOM from "react-dom";
 import DataProvider from "./DataProvider";
 import Graph from "./Graph";
 import Select from 'react-select'
+import SqlCountersGraph from "./SqlCountersGraph";
 
 const options = [
   { value: 1, label: 'Server1' },
@@ -49,6 +50,8 @@ class App extends Component {
           render={data => <Graph data={data} />}
         />
                </div>
+
+               <SqlCountersGraph />
       </div>
         );
     }

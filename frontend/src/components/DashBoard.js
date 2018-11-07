@@ -3,6 +3,7 @@ import ReactDOM from "react-dom";
 import DataProvider from "./DataProvider";
 import Graph from "./Graph";
 import Select from 'react-select'
+import SqlCountersGraph from "./SqlCountersGraph";
 
 
 const options = [
@@ -75,7 +76,7 @@ class DashBoard extends React.Component {
           endpoint={this.state.cpuEndPoint}
           render={data => <Graph data={data} layout={lo}  />}
         />
-
+        <SqlCountersGraph data={'333'}/>
 
 
       </div>
