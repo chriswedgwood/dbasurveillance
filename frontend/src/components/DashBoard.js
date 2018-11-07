@@ -35,8 +35,9 @@ class DashBoard extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      selectedOption:null,
-      layout:{width: 1000, height: 800, title: 'Server 1'}
+      selectedOption:1,
+      layout:{width: 1000, height: 800, title: 'Server 1'},
+      cpuEndPoint:"api/cpu/1"
       };
 
     this.handleDropDownChange = this.handleDropDownChange.bind(this);
@@ -44,15 +45,22 @@ class DashBoard extends React.Component {
   }
 
   handleDropDownChange(selectedOption) {
+
+
     this.setState({
       selectedOption: selectedOption,
-      layout:{width: 1000, height: 800, title: selectedOption.label}
+      layout:{width: 1000, height: 800, title: selectedOption.label},
+      cpuEndPoint:"api/cpu/" + selectedOption.value
+
     });
   }
 
   render() {
     const isSelectedOption = this.state.selectedOption;
-    const server =  this.state.selectedOption ? this.state.selectedOption.value : 1
+    const  lo  = {width: 1000, height: 800, title: 'CPU   '+isSelectedOption.label}
+
+    if(isSelectedOption != null)
+    {
     return (
 
       <div>
@@ -63,15 +71,28 @@ class DashBoard extends React.Component {
 
         />
 
-        <DataProvider //key={this.state.instance}
-          endpoint={"api/cpu/" + server }
-          render={data => <Graph data={data} layout={this.state.layout} />}
+        <DataProvider key={'cpu_'+this.state.selectedOption.value}
+          endpoint={this.state.cpuEndPoint}
+          render={data => <Graph data={data} layout={lo}  />}
         />
 
 
 
       </div>
     );
+    }
+    else
+    {
+      return (
+
+      <div>
+       XXXXXX
+
+
+      </div>
+    );
+    }
+
   }
 }
 

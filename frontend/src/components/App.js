@@ -34,18 +34,22 @@ class App extends Component {
         const url="api/cpu/" + instance;
         return (
 
-           <span>
+           <div>
+               <div>
               <Select
                 value={selectedOption}
                 onChange={this.handleChange}
                 options={options}
+                style={{width: `${(this.state.selectedOption.length) + 100}px`}}
               />
-
+               </div>
+               <div>
               <DataProvider key={this.state.instance}
           endpoint={url}
           render={data => <Graph data={data} />}
         />
-      </span>
+               </div>
+      </div>
         );
     }
 }
