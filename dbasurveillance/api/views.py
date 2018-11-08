@@ -7,8 +7,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import generics
 from dbasurveillance.sqlreports.views import unpack_dates
-from .models import SqlCounter
-from .serializers import SqlCounterSerializer
+from .models import SqlCounter, SqlInstance
+from .serializers import SqlCounterSerializer,SqlInstanceSerializer
 from django.http import JsonResponse
 import pandas as pd
 conn = pyodbc.connect(settings.PANDAS_CONNECTION_STRING)
@@ -22,6 +22,11 @@ class SqlCounterList(generics.ListAPIView):
 class SqlCounterDetail(generics.RetrieveAPIView):
     queryset = SqlCounter.objects.all()
     serializer_class = SqlCounterSerializer
+
+
+class SqlInstanceList(generics.ListAPIView):
+    queryset = SqlInstance.objects.all()
+    serializer_class = SqlInstanceSerializer
 
 
 class CpuView(View):
@@ -55,19 +60,21 @@ class CpuView(View):
                     trace = {"type": 'line', "mode": "lines", "name": column + window}
                     trace["x"] = list(df_window[x_column])
                     trace["y"] = list(df_window[column])
+
+
                     data.append(trace)
 
         return JsonResponse(data, safe=False)
 
 
-class VirtualFileStatsView(View):
+class SqlCounterStatsView(View):
 
     def get(self, request, instance_key):
         data = []
         frames = []
         conn = pyodbc.connect(settings.PANDAS_CONNECTION_STRING)
         date_ranges = unpack_dates(request)
-        sp_call = '{ CALL ' + 'CpuDataByTimeFrame' + ' (?,?,?,?)}'
+        sp_call = '{ CALL ' + 'SqlCountersByTimeFrame' + ' (?,?,?,?)}'
         for i, date_range in enumerate(date_ranges):
             params = (instance_key, date_range[0], date_range[1], str(i))
             sql = sp_call
@@ -92,5 +99,17 @@ class VirtualFileStatsView(View):
                     trace["x"] = list(df_window[x_column])
                     trace["y"] = list(df_window[column])
                     data.append(trace)
+
+        sql_counters = []
+        data = []
+        df_instance_counter = df_results[['SqlCounter', 'InstanceArea']].drop_duplicates()
+
+        for counter in df_results.SqlCounter.unique():
+            if counter in sql_counters or len(sql_counters) == 0:
+                df_counter = df_results.loc[df_results['SqlCounter'] == counter]
+                trace = {"type": 'line', "mode": "lines", "name": counter}
+                trace["x"] = list(df_counter["CaptureDateTime"])
+                trace["y"] = list(df_counter["Value"])
+                data.append(trace)
 
         return JsonResponse(data, safe=False)
