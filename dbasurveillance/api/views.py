@@ -15,13 +15,12 @@ conn = pyodbc.connect(settings.PANDAS_CONNECTION_STRING)
 
 
 class SqlCounterList(generics.ListAPIView):
-    queryset = SqlCounter.objects.all()
+
     serializer_class = SqlCounterSerializer
 
-
-class SqlCounterDetail(generics.RetrieveAPIView):
-    queryset = SqlCounter.objects.all()
-    serializer_class = SqlCounterSerializer
+    def get_queryset(self):
+        queryset = SqlCounter.objects.filter(instance='TDC2FAEC03V01\VINS001',area='Instance')
+        return queryset
 
 
 class SqlInstanceList(generics.ListAPIView):
@@ -72,6 +71,7 @@ class SqlCounterStatsView(View):
     def get(self, request, instance_key):
         data = []
         frames = []
+        sql_counters = self.request.GET.getlist('sqlCounters[]') or []
         conn = pyodbc.connect(settings.PANDAS_CONNECTION_STRING)
         date_ranges = unpack_dates(request)
         sp_call = '{ CALL ' + 'SqlCountersByTimeFrame' + ' (?,?,?,?)}'
@@ -100,7 +100,7 @@ class SqlCounterStatsView(View):
                     trace["y"] = list(df_window[column])
                     data.append(trace)
 
-        sql_counters = []
+
         data = []
         df_instance_counter = df_results[['SqlCounter', 'InstanceArea']].drop_duplicates()
 

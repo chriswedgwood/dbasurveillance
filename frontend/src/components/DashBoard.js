@@ -54,7 +54,7 @@ class DashBoard extends React.Component {
         />
         <DataProvider key={'sql_counters_'+this.state.selectedOption.value}
           endpoint={this.state.sqlCountersEndPoint}
-          render={data => <SqlCountersGraph data={data} layout={lo2}  />}
+          render={data => <SqlCountersGraph data={data} layout={lo2} server={this.state.selectedOption} />}
         />
 
 
