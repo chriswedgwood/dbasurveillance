@@ -1,0 +1,921 @@
+{'default': {'ENGINE': 'sql_server.pyodbc', 'NAME': 'DBADW', 'USER': 'dbadw', 'PASSWORD': 'dbadw', 'HOST': 'localhost\\sql2017', 'PORT': '1436', 'OPTIONS': {'driver': 'ODBC Driver 13 for SQL Server'}}}
+# This is an auto-generated Django model module.
+# You'll have to do the following manually to clean this up:
+#   * Rearrange models' order
+#   * Make sure each model has one field with primary_key=True
+#   * Make sure each ForeignKey has `on_delete` set to the desired behavior.
+#   * Remove `managed = False` lines if you wish to allow Django to create, modify, and delete the table
+# Feel free to rename the models, but don't rename db_table values or field names.
+from django.db import models
+
+
+class Batchlog(models.Model):
+    batchlogid = models.AutoField(db_column='BatchLogID', primary_key=True)  # Field name made lowercase.
+    startdatetime = models.DateTimeField(db_column='StartDateTime')  # Field name made lowercase.
+    enddatetime = models.DateTimeField(db_column='EndDateTime', blank=True, null=True)  # Field name made lowercase.
+    status = models.CharField(db_column='Status', max_length=1)  # Field name made lowercase.
+
+    class Meta:
+        managed = False
+        db_table = 'BatchLog'
+
+
+class Databasesize(models.Model):
+    capturedate = models.DateTimeField(db_column='CaptureDate', primary_key=True)  # Field name made lowercase.
+    servername = models.CharField(db_column='ServerName', max_length=100)  # Field name made lowercase.
+    dbname = models.CharField(db_column='Dbname', max_length=128)  # Field name made lowercase.
+    dbstatus = models.CharField(max_length=50, blank=True, null=True)
+    recovery_model = models.CharField(db_column='Recovery_Model', max_length=40, blank=True, null=True)  # Field name made lowercase.
+    dbsize = models.DecimalField(db_column='DBsize', max_digits=38, decimal_places=2, blank=True, null=True)  # Field name made lowercase.
+    file_size_mb = models.DecimalField(db_column='file_Size_MB', max_digits=30, decimal_places=2, blank=True, null=True)  # Field name made lowercase.
+    space_used_mb = models.DecimalField(db_column='Space_Used_MB', max_digits=30, decimal_places=2, blank=True, null=True)  # Field name made lowercase.
+    free_space_mb = models.DecimalField(db_column='Free_Space_MB', max_digits=30, decimal_places=2, blank=True, null=True)  # Field name made lowercase.
+    log_file_size_mb = models.DecimalField(db_column='Log_File_Size_MB', max_digits=38, decimal_places=2, blank=True, null=True)  # Field name made lowercase.
+    log_space_used_mb = models.DecimalField(db_column='log_Space_Used_MB', max_digits=30, decimal_places=2, blank=True, null=True)  # Field name made lowercase.
+    log_free_space_mb = models.DecimalField(db_column='log_Free_Space_MB', max_digits=30, decimal_places=2, blank=True, null=True)  # Field name made lowercase.
+    db_freespace = models.CharField(db_column='DB_Freespace', max_length=50, blank=True, null=True)  # Field name made lowercase.
+
+    class Meta:
+        managed = False
+        db_table = 'DatabaseSize'
+        unique_together = (('capturedate', 'servername', 'dbname'), ('servername', 'dbname', 'capturedate'),)
+
+
+class Dimdatabasefiles(models.Model):
+    databasefileskey = models.AutoField(db_column='DatabaseFilesKey', primary_key=True)  # Field name made lowercase.
+    servername = models.CharField(db_column='ServerName', max_length=200)  # Field name made lowercase.
+    databasename = models.CharField(db_column='DatabaseName', max_length=200)  # Field name made lowercase.
+    logicalfilename = models.CharField(db_column='LogicalFileName', max_length=255)  # Field name made lowercase.
+    physicalfilename = models.CharField(db_column='PhysicalFileName', max_length=255)  # Field name made lowercase.
+    mountpoint = models.CharField(db_column='MountPoint', max_length=500)  # Field name made lowercase.
+    applicationarea = models.CharField(db_column='ApplicationArea', max_length=500)  # Field name made lowercase.
+    startdate = models.DateTimeField(db_column='StartDate')  # Field name made lowercase.
+    enddate = models.DateTimeField(db_column='EndDate', blank=True, null=True)  # Field name made lowercase.
+
+    class Meta:
+        managed = False
+        db_table = 'DimDatabaseFiles'
+
+
+class Dimdate(models.Model):
+    datekey = models.IntegerField(db_column='DateKey', primary_key=True)  # Field name made lowercase.
+    date = models.DateTimeField(db_column='Date', blank=True, null=True)  # Field name made lowercase.
+    fulldateuk = models.CharField(db_column='FullDateUK', max_length=10, blank=True, null=True)  # Field name made lowercase.
+    fulldateusa = models.CharField(db_column='FullDateUSA', max_length=10, blank=True, null=True)  # Field name made lowercase.
+    dayofmonth = models.CharField(db_column='DayOfMonth', max_length=2, blank=True, null=True)  # Field name made lowercase.
+    daysuffix = models.CharField(db_column='DaySuffix', max_length=4, blank=True, null=True)  # Field name made lowercase.
+    dayname = models.CharField(db_column='DayName', max_length=9, blank=True, null=True)  # Field name made lowercase.
+    dayofweekusa = models.CharField(db_column='DayOfWeekUSA', max_length=1, blank=True, null=True)  # Field name made lowercase.
+    dayofweekuk = models.CharField(db_column='DayOfWeekUK', max_length=1, blank=True, null=True)  # Field name made lowercase.
+    dayofweekinmonth = models.CharField(db_column='DayOfWeekInMonth', max_length=2, blank=True, null=True)  # Field name made lowercase.
+    dayofweekinyear = models.CharField(db_column='DayOfWeekInYear', max_length=2, blank=True, null=True)  # Field name made lowercase.
+    dayofquarter = models.CharField(db_column='DayOfQuarter', max_length=3, blank=True, null=True)  # Field name made lowercase.
+    dayofyear = models.CharField(db_column='DayOfYear', max_length=3, blank=True, null=True)  # Field name made lowercase.
+    weekofmonth = models.CharField(db_column='WeekOfMonth', max_length=1, blank=True, null=True)  # Field name made lowercase.
+    weekofquarter = models.CharField(db_column='WeekOfQuarter', max_length=2, blank=True, null=True)  # Field name made lowercase.
+    weekofyear = models.CharField(db_column='WeekOfYear', max_length=2, blank=True, null=True)  # Field name made lowercase.
+    month = models.CharField(db_column='Month', max_length=2, blank=True, null=True)  # Field name made lowercase.
+    monthname = models.CharField(db_column='MonthName', max_length=9, blank=True, null=True)  # Field name made lowercase.
+    monthofquarter = models.CharField(db_column='MonthOfQuarter', max_length=2, blank=True, null=True)  # Field name made lowercase.
+    quarter = models.CharField(db_column='Quarter', max_length=1, blank=True, null=True)  # Field name made lowercase.
+    quartername = models.CharField(db_column='QuarterName', max_length=9, blank=True, null=True)  # Field name made lowercase.
+    year = models.CharField(db_column='Year', max_length=4, blank=True, null=True)  # Field name made lowercase.
+    yearname = models.CharField(db_column='YearName', max_length=7, blank=True, null=True)  # Field name made lowercase.
+    monthyear = models.CharField(db_column='MonthYear', max_length=10, blank=True, null=True)  # Field name made lowercase.
+    mmyyyy = models.CharField(db_column='MMYYYY', max_length=6, blank=True, null=True)  # Field name made lowercase.
+    firstdayofmonth = models.DateField(db_column='FirstDayOfMonth', blank=True, null=True)  # Field name made lowercase.
+    lastdayofmonth = models.DateField(db_column='LastDayOfMonth', blank=True, null=True)  # Field name made lowercase.
+    firstdayofquarter = models.DateField(db_column='FirstDayOfQuarter', blank=True, null=True)  # Field name made lowercase.
+    lastdayofquarter = models.DateField(db_column='LastDayOfQuarter', blank=True, null=True)  # Field name made lowercase.
+    firstdayofyear = models.DateField(db_column='FirstDayOfYear', blank=True, null=True)  # Field name made lowercase.
+    lastdayofyear = models.DateField(db_column='LastDayOfYear', blank=True, null=True)  # Field name made lowercase.
+    isholidayusa = models.NullBooleanField(db_column='IsHolidayUSA')  # Field name made lowercase.
+    isweekday = models.NullBooleanField(db_column='IsWeekday')  # Field name made lowercase.
+    holidayusa = models.CharField(db_column='HolidayUSA', max_length=50, blank=True, null=True)  # Field name made lowercase.
+    isholidayuk = models.NullBooleanField(db_column='IsHolidayUK')  # Field name made lowercase.
+    holidayuk = models.CharField(db_column='HolidayUK', max_length=50, blank=True, null=True)  # Field name made lowercase.
+
+    class Meta:
+        managed = False
+        db_table = 'DimDate'
+
+
+class Diminstances(models.Model):
+    instancekey = models.AutoField(db_column='InstanceKey', primary_key=True)  # Field name made lowercase.
+    instancename = models.CharField(db_column='InstanceName', max_length=128)  # Field name made lowercase.
+    virtualservername = models.CharField(db_column='VirtualServerName', max_length=128)  # Field name made lowercase.
+    clustered = models.BooleanField(db_column='Clustered')  # Field name made lowercase.
+    node = models.CharField(db_column='Node', max_length=128)  # Field name made lowercase.
+    edition = models.CharField(db_column='Edition', max_length=100)  # Field name made lowercase.
+    productlevel = models.CharField(db_column='ProductLevel', max_length=100)  # Field name made lowercase.
+    productversion = models.CharField(db_column='ProductVersion', max_length=100)  # Field name made lowercase.
+
+    class Meta:
+        managed = False
+        db_table = 'DimInstances'
+
+
+class Dimperfmoncounters(models.Model):
+    perfmoncounterkey = models.AutoField(db_column='PerfmonCounterKey', primary_key=True)  # Field name made lowercase.
+    countergroup = models.CharField(db_column='CounterGroup', max_length=128)  # Field name made lowercase.
+    countername = models.CharField(db_column='CounterName', max_length=128)  # Field name made lowercase.
+    instancename = models.CharField(db_column='InstanceName', max_length=128)  # Field name made lowercase.
+    node = models.CharField(db_column='Node', max_length=63)  # Field name made lowercase.
+    virtualservername = models.CharField(db_column='VirtualServerName', max_length=63)  # Field name made lowercase.
+    perfmoninstance = models.CharField(db_column='PerfmonInstance', max_length=128)  # Field name made lowercase.
+
+    class Meta:
+        managed = False
+        db_table = 'DimPerfmonCounters'
+
+
+class Dimserver(models.Model):
+    serverkey = models.AutoField(db_column='ServerKey', primary_key=True)  # Field name made lowercase.
+    environment = models.CharField(db_column='Environment', max_length=128)  # Field name made lowercase.
+    servername = models.CharField(db_column='ServerName', max_length=128)  # Field name made lowercase.
+    node = models.CharField(db_column='Node', max_length=128)  # Field name made lowercase.
+    startdate = models.DateField(db_column='Startdate')  # Field name made lowercase.
+    enddate = models.DateField(db_column='EndDate', blank=True, null=True)  # Field name made lowercase.
+
+    class Meta:
+        managed = False
+        db_table = 'DimServer'
+
+
+class Dimsqlcounters(models.Model):
+    sqlcounterkey = models.AutoField(db_column='SqlCounterKey', primary_key=True)  # Field name made lowercase.
+    instancename = models.CharField(db_column='InstanceName', max_length=200, blank=True, null=True)  # Field name made lowercase.
+    sqlcounter = models.CharField(db_column='SqlCounter', max_length=200, blank=True, null=True)  # Field name made lowercase.
+    instancearea = models.CharField(db_column='InstanceArea', max_length=200, blank=True, null=True)  # Field name made lowercase.
+    node = models.CharField(db_column='Node', max_length=128, blank=True, null=True)  # Field name made lowercase.
+    category = models.CharField(db_column='Category', max_length=128, blank=True, null=True)  # Field name made lowercase.
+    startdate = models.DateField(db_column='Startdate', blank=True, null=True)  # Field name made lowercase.
+    enddate = models.DateField(db_column='EndDate', blank=True, null=True)  # Field name made lowercase.
+
+    class Meta:
+        managed = False
+        db_table = 'DimSqlCounters'
+
+
+class Dimstoredprocedures(models.Model):
+    storedprocedurekey = models.AutoField(db_column='StoredProcedureKey', primary_key=True)  # Field name made lowercase.
+    procedurename = models.CharField(db_column='ProcedureName', max_length=200)  # Field name made lowercase.
+    databasename = models.CharField(db_column='DatabaseName', max_length=200)  # Field name made lowercase.
+    instancename = models.CharField(db_column='Instancename', max_length=200)  # Field name made lowercase.
+    friendlyinstancename = models.CharField(db_column='FriendlyInstanceName', max_length=200)  # Field name made lowercase.
+    friendlyhostname = models.CharField(db_column='FriendlyHostName', max_length=200)  # Field name made lowercase.
+    virtualservername = models.CharField(db_column='VirtualServerName', max_length=200)  # Field name made lowercase.
+    queryplan = models.TextField(db_column='QueryPlan', blank=True, null=True)  # Field name made lowercase. This field type is a guess.
+    queryplancount = models.IntegerField(db_column='QueryPlanCount', blank=True, null=True)  # Field name made lowercase.
+    node = models.CharField(db_column='Node', max_length=200)  # Field name made lowercase.
+    startdate = models.DateTimeField(db_column='StartDate')  # Field name made lowercase.
+    enddate = models.DateTimeField(db_column='EndDate', blank=True, null=True)  # Field name made lowercase.
+
+    class Meta:
+        managed = False
+        db_table = 'DimStoredProcedures'
+
+
+class Dimtime(models.Model):
+    timekey = models.IntegerField(db_column='TimeKey', primary_key=True)  # Field name made lowercase.
+    time = models.CharField(db_column='Time', max_length=11)  # Field name made lowercase.
+    time24 = models.CharField(db_column='Time24', max_length=8)  # Field name made lowercase.
+    hourname = models.CharField(db_column='HourName', max_length=5)  # Field name made lowercase.
+    minutename = models.CharField(db_column='MinuteName', max_length=8)  # Field name made lowercase.
+    hournumber = models.SmallIntegerField(db_column='HourNumber')  # Field name made lowercase.
+    hour24 = models.SmallIntegerField(db_column='Hour24')  # Field name made lowercase.
+    minutenumber = models.SmallIntegerField(db_column='MinuteNumber')  # Field name made lowercase.
+    secondnumber = models.SmallIntegerField(db_column='SecondNumber')  # Field name made lowercase.
+    ampm = models.CharField(db_column='AMPM', max_length=2)  # Field name made lowercase.
+    elapsedminutes = models.IntegerField(db_column='ElapsedMinutes')  # Field name made lowercase.
+    elapsedseconds = models.IntegerField(db_column='ElapsedSeconds')  # Field name made lowercase.
+
+    class Meta:
+        managed = False
+        db_table = 'DimTime'
+
+
+class Dimwaitstats(models.Model):
+    waitstatskey = models.AutoField(db_column='WaitStatsKey', primary_key=True)  # Field name made lowercase.
+    waitstat = models.CharField(db_column='WaitStat', max_length=200)  # Field name made lowercase.
+    description = models.CharField(db_column='Description', max_length=4000, blank=True, null=True)  # Field name made lowercase.
+
+    class Meta:
+        managed = False
+        db_table = 'DimWaitStats'
+
+
+class Dimwhoisactive(models.Model):
+    whokey = models.AutoField(db_column='WhoKey', primary_key=True)  # Field name made lowercase.
+    instancename = models.CharField(db_column='InstanceName', max_length=128)  # Field name made lowercase.
+    parentsqltext = models.CharField(db_column='ParentSqlText', max_length=8000, blank=True, null=True)  # Field name made lowercase.
+    sqltext = models.CharField(db_column='SqlText', max_length=8000, blank=True, null=True)  # Field name made lowercase.
+
+    class Meta:
+        managed = False
+        db_table = 'DimWhoIsActive'
+
+
+class Factcpu(models.Model):
+    capturedatetime = models.DateTimeField(db_column='CaptureDateTime')  # Field name made lowercase.
+    datekey = models.IntegerField(db_column='DateKey')  # Field name made lowercase.
+    timekey = models.IntegerField(db_column='TimeKey')  # Field name made lowercase.
+    instancekey = models.IntegerField(db_column='InstanceKey')  # Field name made lowercase.
+    sqlserver = models.SmallIntegerField(db_column='SqlServer')  # Field name made lowercase.
+    systemidle = models.SmallIntegerField(db_column='SystemIdle')  # Field name made lowercase.
+    other = models.FloatField(db_column='Other')  # Field name made lowercase.
+
+    class Meta:
+        managed = False
+        db_table = 'FactCPU'
+
+
+class Factfileinfo(models.Model):
+    capturedate = models.DateTimeField(db_column='CaptureDate')  # Field name made lowercase.
+    datekey = models.IntegerField(db_column='DateKey')  # Field name made lowercase.
+    timekey = models.IntegerField(db_column='TimeKey')  # Field name made lowercase.
+    instancekey = models.IntegerField(db_column='InstanceKey')  # Field name made lowercase.
+    databasefilekey = models.IntegerField(db_column='DatabaseFileKey')  # Field name made lowercase.
+    sizemb = models.DecimalField(db_column='SizeMB', max_digits=18, decimal_places=2)  # Field name made lowercase.
+    spaceusedmb = models.DecimalField(db_column='SpaceUsedMB', max_digits=18, decimal_places=2)  # Field name made lowercase.
+    freespacemb = models.DecimalField(db_column='FreeSpaceMB', max_digits=18, decimal_places=2)  # Field name made lowercase.
+    maxsize = models.DecimalField(db_column='MaxSize', max_digits=18, decimal_places=2)  # Field name made lowercase.
+    ispercentgrowth = models.BooleanField(db_column='IsPercentGrowth')  # Field name made lowercase.
+    growth = models.DecimalField(db_column='Growth', max_digits=18, decimal_places=2)  # Field name made lowercase.
+
+    class Meta:
+        managed = False
+        db_table = 'FactFileInfo'
+
+
+class Factperfmoncounters(models.Model):
+    capturedate = models.DateTimeField(db_column='CaptureDate')  # Field name made lowercase.
+    datekey = models.IntegerField(db_column='DateKey')  # Field name made lowercase.
+    timekey = models.IntegerField(db_column='TimeKey')  # Field name made lowercase.
+    perfmoncounterkey = models.IntegerField(db_column='PerfmonCounterKey')  # Field name made lowercase.
+    instancekey = models.IntegerField(db_column='InstanceKey')  # Field name made lowercase.
+    value = models.FloatField(db_column='Value')  # Field name made lowercase.
+
+    class Meta:
+        managed = False
+        db_table = 'FactPerfmonCounters'
+
+
+class Factsqlcounters(models.Model):
+    capturedate = models.DateTimeField(db_column='CaptureDate')  # Field name made lowercase.
+    datekey = models.IntegerField(db_column='DateKey')  # Field name made lowercase.
+    timekey = models.IntegerField(db_column='TimeKey')  # Field name made lowercase.
+    sqlcounterkey = models.IntegerField(db_column='SqlCounterKey')  # Field name made lowercase.
+    instancekey = models.IntegerField(db_column='InstanceKey')  # Field name made lowercase.
+    value = models.FloatField(db_column='Value')  # Field name made lowercase.
+
+    class Meta:
+        managed = False
+        db_table = 'FactSQLCounters'
+
+
+class Factstoredprocedures(models.Model):
+    capturedate = models.DateTimeField(db_column='CaptureDate')  # Field name made lowercase.
+    datekey = models.IntegerField(db_column='DateKey')  # Field name made lowercase.
+    timekey = models.IntegerField(db_column='TimeKey')  # Field name made lowercase.
+    storedprocedurekey = models.IntegerField(db_column='StoredProcedureKey')  # Field name made lowercase.
+    executioncount = models.IntegerField(db_column='ExecutionCount')  # Field name made lowercase.
+    totalworkertime = models.BigIntegerField(db_column='TotalWorkerTime')  # Field name made lowercase.
+    totalphysicalreads = models.BigIntegerField(db_column='TotalPhysicalReads')  # Field name made lowercase.
+    totallogicalreads = models.BigIntegerField(db_column='TotalLogicalReads')  # Field name made lowercase.
+    totallogicalwrites = models.BigIntegerField(db_column='TotalLogicalWrites')  # Field name made lowercase.
+    totalelapsedtime = models.BigIntegerField(db_column='TotalElapsedTime')  # Field name made lowercase.
+    pullperiod = models.IntegerField(db_column='PullPeriod')  # Field name made lowercase.
+
+    class Meta:
+        managed = False
+        db_table = 'FactStoredProcedures'
+
+
+class Factvirtualfilestats(models.Model):
+    capturedate = models.DateTimeField(db_column='CaptureDate')  # Field name made lowercase.
+    datekey = models.IntegerField(db_column='DateKey', blank=True, null=True)  # Field name made lowercase.
+    timekey = models.IntegerField(db_column='TimeKey', blank=True, null=True)  # Field name made lowercase.
+    filekey = models.IntegerField(db_column='FileKey', blank=True, null=True)  # Field name made lowercase.
+    instancekey = models.IntegerField(db_column='InstanceKey', blank=True, null=True)  # Field name made lowercase.
+    msperread = models.FloatField(db_column='MsPerRead', blank=True, null=True)  # Field name made lowercase.
+    msperwrite = models.FloatField(db_column='MsPerWrite', blank=True, null=True)  # Field name made lowercase.
+    iostallread = models.IntegerField(db_column='IoStallRead', blank=True, null=True)  # Field name made lowercase.
+    iostallwrite = models.IntegerField(db_column='IoStallWrite', blank=True, null=True)  # Field name made lowercase.
+    numofreads = models.IntegerField(db_column='NumOfReads', blank=True, null=True)  # Field name made lowercase.
+    numofwrites = models.IntegerField(db_column='NumOfWrites', blank=True, null=True)  # Field name made lowercase.
+    numofbyteswritten = models.BigIntegerField(db_column='NumOfBytesWritten', blank=True, null=True)  # Field name made lowercase.
+    pullperiod = models.IntegerField(db_column='PullPeriod', blank=True, null=True)  # Field name made lowercase.
+
+    class Meta:
+        managed = False
+        db_table = 'FactVirtualFileStats'
+
+
+class Factwaitstats(models.Model):
+    capturedate = models.DateTimeField(db_column='CaptureDate')  # Field name made lowercase.
+    datekey = models.IntegerField(db_column='DateKey')  # Field name made lowercase.
+    timekey = models.IntegerField(db_column='TimeKey')  # Field name made lowercase.
+    waitstatskey = models.IntegerField(db_column='WaitStatsKey')  # Field name made lowercase.
+    instancekey = models.IntegerField(db_column='InstanceKey')  # Field name made lowercase.
+    waitms = models.IntegerField(db_column='WaitMs')  # Field name made lowercase.
+    resourcems = models.IntegerField(db_column='ResourceMs')  # Field name made lowercase.
+    waitcount = models.IntegerField(db_column='WaitCount')  # Field name made lowercase.
+    differentialmins = models.IntegerField(db_column='DifferentialMins')  # Field name made lowercase.
+
+    class Meta:
+        managed = False
+        db_table = 'FactWaitStats'
+
+
+class Factwhoisactive(models.Model):
+    capturedatetime = models.DateTimeField(db_column='CaptureDateTime')  # Field name made lowercase.
+    datekey = models.IntegerField(db_column='DateKey')  # Field name made lowercase.
+    timekey = models.IntegerField(db_column='TimeKey')  # Field name made lowercase.
+    instancekey = models.IntegerField(db_column='InstanceKey')  # Field name made lowercase.
+    whokey = models.IntegerField(db_column='WhoKey')  # Field name made lowercase.
+    cnt = models.IntegerField(blank=True, null=True)
+    max_cpu = models.DecimalField(max_digits=19, decimal_places=4, blank=True, null=True)
+    max_tempdb = models.DecimalField(max_digits=19, decimal_places=4, blank=True, null=True)
+    reads = models.DecimalField(max_digits=19, decimal_places=4, blank=True, null=True)
+    writes = models.DecimalField(max_digits=19, decimal_places=4, blank=True, null=True)
+    physical_reads = models.DecimalField(max_digits=19, decimal_places=4, blank=True, null=True)
+    blockedsessioncount = models.IntegerField(db_column='BlockedSessionCount', blank=True, null=True)  # Field name made lowercase.
+    max_avg_time = models.CharField(max_length=100, blank=True, null=True)
+    max_time = models.CharField(max_length=100, blank=True, null=True)
+    database_name = models.CharField(max_length=256, blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'FactWhoIsActive'
+
+
+class Heartbeat(models.Model):
+    servername = models.CharField(db_column='ServerName', max_length=64, blank=True, null=True)  # Field name made lowercase.
+    session_id = models.IntegerField(db_column='Session_ID', blank=True, null=True)  # Field name made lowercase.
+    z = models.IntegerField(blank=True, null=True)
+    newpatterns = models.IntegerField(db_column='NewPatterns', blank=True, null=True)  # Field name made lowercase.
+    generator = models.CharField(db_column='Generator', max_length=5, blank=True, null=True)  # Field name made lowercase.
+    stresslevel = models.SmallIntegerField(db_column='StressLevel', blank=True, null=True)  # Field name made lowercase.
+    testcase = models.CharField(db_column='TestCase', max_length=64, blank=True, null=True)  # Field name made lowercase.
+    starttime = models.DateTimeField(db_column='StartTime', blank=True, null=True)  # Field name made lowercase.
+    endtime = models.DateTimeField(db_column='EndTime', blank=True, null=True)  # Field name made lowercase.
+    durationseconds = models.IntegerField(db_column='DurationSeconds', blank=True, null=True)  # Field name made lowercase.
+    x_axis_min = models.DateTimeField(blank=True, null=True)
+    x_axis_10min = models.DateTimeField(blank=True, null=True)
+    x_axis_hour = models.DateTimeField(blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'HeartBeat'
+
+
+class Logicaldisk(models.Model):
+    diskdtm = models.DateTimeField(db_column='DiskDTM', blank=True, null=True)  # Field name made lowercase.
+    name = models.CharField(db_column='Name', max_length=50, blank=True, null=True)  # Field name made lowercase.
+    freespace = models.BigIntegerField(db_column='FreeSpace', blank=True, null=True)  # Field name made lowercase.
+    size = models.BigIntegerField(db_column='Size', blank=True, null=True)  # Field name made lowercase.
+
+    class Meta:
+        managed = False
+        db_table = 'LogicalDisk'
+
+
+class Package(models.Model):
+    packageid = models.AutoField(db_column='PackageID', primary_key=True)  # Field name made lowercase.
+    packageguid = models.CharField(db_column='PackageGUID', max_length=36)  # Field name made lowercase.
+    packagename = models.CharField(db_column='PackageName', max_length=255)  # Field name made lowercase.
+    creationdate = models.DateTimeField(db_column='CreationDate')  # Field name made lowercase.
+    createdby = models.CharField(db_column='CreatedBy', max_length=255)  # Field name made lowercase.
+    entereddatetime = models.DateTimeField(db_column='EnteredDateTime')  # Field name made lowercase.
+
+    class Meta:
+        managed = False
+        db_table = 'Package'
+
+
+class Packageerrorlog(models.Model):
+    packageerrorlogid = models.AutoField(db_column='PackageErrorLogID', primary_key=True)  # Field name made lowercase.
+    packagelogid = models.ForeignKey('Packagelog', models.DO_NOTHING, db_column='PackageLogID')  # Field name made lowercase.
+    sourcename = models.CharField(db_column='SourceName', max_length=64)  # Field name made lowercase.
+    sourceid = models.CharField(db_column='SourceID', max_length=36)  # Field name made lowercase.
+    errorcode = models.IntegerField(db_column='ErrorCode', blank=True, null=True)  # Field name made lowercase.
+    errordescription = models.CharField(db_column='ErrorDescription', max_length=2000, blank=True, null=True)  # Field name made lowercase.
+    logdatetime = models.DateTimeField(db_column='LogDateTime')  # Field name made lowercase.
+
+    class Meta:
+        managed = False
+        db_table = 'PackageErrorLog'
+
+
+class Packagelog(models.Model):
+    packagelogid = models.AutoField(db_column='PackageLogID', primary_key=True)  # Field name made lowercase.
+    batchlogid = models.ForeignKey(Batchlog, models.DO_NOTHING, db_column='BatchLogID')  # Field name made lowercase.
+    packageversionid = models.ForeignKey('Packageversion', models.DO_NOTHING, db_column='PackageVersionID')  # Field name made lowercase.
+    executioninstanceid = models.CharField(db_column='ExecutionInstanceID', max_length=36)  # Field name made lowercase.
+    machinename = models.CharField(db_column='MachineName', max_length=64)  # Field name made lowercase.
+    username = models.CharField(db_column='UserName', max_length=64)  # Field name made lowercase.
+    startdatetime = models.DateTimeField(db_column='StartDateTime')  # Field name made lowercase.
+    enddatetime = models.DateTimeField(db_column='EndDateTime', blank=True, null=True)  # Field name made lowercase.
+    status = models.CharField(db_column='Status', max_length=1)  # Field name made lowercase.
+
+    class Meta:
+        managed = False
+        db_table = 'PackageLog'
+
+
+class Packagetasklog(models.Model):
+    packagetasklogid = models.AutoField(db_column='PackageTaskLogID', primary_key=True)  # Field name made lowercase.
+    packagelogid = models.ForeignKey(Packagelog, models.DO_NOTHING, db_column='PackageLogID')  # Field name made lowercase.
+    sourcename = models.CharField(db_column='SourceName', max_length=255)  # Field name made lowercase.
+    sourceid = models.CharField(db_column='SourceID', max_length=36)  # Field name made lowercase.
+    startdatetime = models.DateTimeField(db_column='StartDateTime')  # Field name made lowercase.
+    enddatetime = models.DateTimeField(db_column='EndDateTime', blank=True, null=True)  # Field name made lowercase.
+
+    class Meta:
+        managed = False
+        db_table = 'PackageTaskLog'
+
+
+class Packagevariablelog(models.Model):
+    packagevariablelogid = models.AutoField(db_column='PackageVariableLogID', primary_key=True)  # Field name made lowercase.
+    packagelogid = models.ForeignKey(Packagelog, models.DO_NOTHING, db_column='PackageLogID')  # Field name made lowercase.
+    variablename = models.CharField(db_column='VariableName', max_length=255)  # Field name made lowercase.
+    variablevalue = models.TextField(db_column='VariableValue')  # Field name made lowercase.
+    logdatetime = models.DateTimeField(db_column='LogDateTime')  # Field name made lowercase.
+
+    class Meta:
+        managed = False
+        db_table = 'PackageVariableLog'
+
+
+class Packageversion(models.Model):
+    packageversionid = models.AutoField(db_column='PackageVersionID', primary_key=True)  # Field name made lowercase.
+    packageversionguid = models.CharField(db_column='PackageVersionGUID', max_length=36)  # Field name made lowercase.
+    packageid = models.ForeignKey(Package, models.DO_NOTHING, db_column='PackageID')  # Field name made lowercase.
+    versionmajor = models.IntegerField(db_column='VersionMajor')  # Field name made lowercase.
+    versionminor = models.IntegerField(db_column='VersionMinor')  # Field name made lowercase.
+    versionbuild = models.IntegerField(db_column='VersionBuild')  # Field name made lowercase.
+    versioncomment = models.CharField(db_column='VersionComment', max_length=1000)  # Field name made lowercase.
+    entereddatetime = models.DateTimeField(db_column='EnteredDateTime')  # Field name made lowercase.
+
+    class Meta:
+        managed = False
+        db_table = 'PackageVersion'
+
+
+class PerfmondataDbaReport(models.Model):
+    servername = models.CharField(db_column='ServerName', primary_key=True, max_length=128)  # Field name made lowercase.
+    capturedate = models.DateTimeField(db_column='CaptureDate')  # Field name made lowercase.
+    counter = models.CharField(db_column='Counter', max_length=128)  # Field name made lowercase.
+    value = models.DecimalField(db_column='Value', max_digits=38, decimal_places=2, blank=True, null=True)  # Field name made lowercase.
+
+    class Meta:
+        managed = False
+        db_table = 'PerfMonData_DBA_Report'
+        unique_together = (('servername', 'capturedate', 'counter'),)
+
+
+class PowerbiExtract1(models.Model):
+    servername = models.CharField(db_column='ServerName', max_length=128)  # Field name made lowercase.
+    capturedate = models.CharField(db_column='CaptureDate', max_length=16)  # Field name made lowercase.
+    capturedateonly = models.DateField(db_column='CaptureDateOnly', blank=True, null=True)  # Field name made lowercase.
+    databasename = models.CharField(db_column='DatabaseName', max_length=100)  # Field name made lowercase.
+    procedurename = models.CharField(db_column='ProcedureName', max_length=100)  # Field name made lowercase.
+    execution_count = models.BigIntegerField(blank=True, null=True)
+    total_worker_time = models.BigIntegerField(blank=True, null=True)
+    total_physical_reads = models.BigIntegerField(blank=True, null=True)
+    total_logical_reads = models.BigIntegerField(blank=True, null=True)
+    total_logical_writes = models.BigIntegerField(blank=True, null=True)
+    total_elapsed_time = models.BigIntegerField(blank=True, null=True)
+    average_logical_reads = models.BigIntegerField(blank=True, null=True)
+    average_worker_time = models.BigIntegerField(blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'PowerBI_Extract1'
+
+
+class ProcstatsDbaReports(models.Model):
+    servername = models.CharField(db_column='ServerName', primary_key=True, max_length=128)  # Field name made lowercase.
+    capturedate = models.CharField(db_column='CaptureDate', max_length=16)  # Field name made lowercase.
+    database = models.CharField(max_length=100)
+    procedurename = models.CharField(db_column='ProcedureName', max_length=100)  # Field name made lowercase.
+    execution_count = models.BigIntegerField(blank=True, null=True)
+    total_worker_time = models.BigIntegerField(blank=True, null=True)
+    total_physical_reads = models.BigIntegerField(blank=True, null=True)
+    total_logical_writes = models.BigIntegerField(blank=True, null=True)
+    total_logical_reads = models.BigIntegerField(blank=True, null=True)
+    total_elapsed_time = models.BigIntegerField(blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'ProcStats_DBA_Reports'
+        unique_together = (('servername', 'capturedate', 'database', 'procedurename'),)
+
+
+class ReportQuerystats(models.Model):
+    servername = models.CharField(db_column='ServerName', max_length=128, blank=True, null=True)  # Field name made lowercase.
+    capturedate = models.DateTimeField(db_column='CaptureDate')  # Field name made lowercase.
+    execution_count_rank = models.BigIntegerField(blank=True, null=True)
+    execution_count = models.BigIntegerField()
+    total_logical_reads_rank = models.BigIntegerField(blank=True, null=True)
+    total_logical_reads = models.BigIntegerField()
+    total_worker_time_rank = models.BigIntegerField(blank=True, null=True)
+    total_worker_time = models.BigIntegerField()
+    query_text = models.TextField(blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'Report_QueryStats'
+
+
+class Tablerowcounts(models.Model):
+    servername = models.CharField(db_column='ServerName', primary_key=True, max_length=50)  # Field name made lowercase.
+    database_name = models.CharField(db_column='Database_Name', max_length=128)  # Field name made lowercase.
+    capturedate = models.DateTimeField(db_column='CaptureDate')  # Field name made lowercase.
+    tablename = models.CharField(db_column='TableName', max_length=257)  # Field name made lowercase.
+    rowcnt = models.BigIntegerField(db_column='RowCnt', blank=True, null=True)  # Field name made lowercase.
+
+    class Meta:
+        managed = False
+        db_table = 'TableRowCounts'
+        unique_together = (('servername', 'database_name', 'capturedate', 'tablename'),)
+
+
+class TableIoDbaReports(models.Model):
+    servername = models.CharField(db_column='ServerName', primary_key=True, max_length=128)  # Field name made lowercase.
+    databasename = models.CharField(db_column='DatabaseName', max_length=128)  # Field name made lowercase.
+    logicaltable = models.CharField(db_column='LogicalTable', max_length=128)  # Field name made lowercase.
+    capturedate = models.DateTimeField(db_column='CaptureDate')  # Field name made lowercase.
+    num_of_reads = models.BigIntegerField(blank=True, null=True)
+    num_of_writes = models.BigIntegerField(blank=True, null=True)
+    io_stall_read_ms = models.BigIntegerField(blank=True, null=True)
+    io_stall_write_ms = models.BigIntegerField(blank=True, null=True)
+    mb_read = models.DecimalField(db_column='MB_Read', max_digits=10, decimal_places=2, blank=True, null=True)  # Field name made lowercase.
+    mb_written = models.DecimalField(db_column='MB_Written', max_digits=10, decimal_places=2, blank=True, null=True)  # Field name made lowercase.
+
+    class Meta:
+        managed = False
+        db_table = 'Table_IO_DBA_Reports'
+        unique_together = (('servername', 'databasename', 'logicaltable', 'capturedate'),)
+
+
+class Totalio(models.Model):
+    servername = models.CharField(db_column='ServerName', primary_key=True, max_length=128)  # Field name made lowercase.
+    databasename = models.CharField(db_column='DatabaseName', max_length=128)  # Field name made lowercase.
+    capturedate = models.DateTimeField(db_column='CaptureDate')  # Field name made lowercase.
+    num_of_reads = models.BigIntegerField(blank=True, null=True)
+    num_of_writes = models.BigIntegerField(blank=True, null=True)
+    read_per_ms = models.BigIntegerField(blank=True, null=True)
+    write_per_ms = models.BigIntegerField(blank=True, null=True)
+    io_stall_read = models.BigIntegerField(blank=True, null=True)
+    io_stall_write = models.BigIntegerField(blank=True, null=True)
+    num_of_bytes_written = models.BigIntegerField(blank=True, null=True)
+    iops = models.BigIntegerField(blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'TotalIO'
+        unique_together = (('servername', 'databasename', 'capturedate'),)
+
+
+class Whotables(models.Model):
+    id = models.AutoField()
+    name = models.CharField(max_length=100, blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'WHotables'
+
+
+class Whoisactivedata(models.Model):
+    parent_sql_text = models.TextField(blank=True, null=True)
+    sql_text = models.TextField(blank=True, null=True)
+    datetimerounddown = models.DateTimeField(db_column='dateTimeRoundDown', blank=True, null=True)  # Field name made lowercase.
+    cnt = models.IntegerField(blank=True, null=True)
+    max_cpu = models.DecimalField(max_digits=19, decimal_places=4, blank=True, null=True)
+    max_tempdb = models.DecimalField(max_digits=19, decimal_places=4, blank=True, null=True)
+    reads = models.DecimalField(max_digits=19, decimal_places=4, blank=True, null=True)
+    writes = models.DecimalField(max_digits=19, decimal_places=4, blank=True, null=True)
+    physical_reads = models.DecimalField(max_digits=19, decimal_places=4, blank=True, null=True)
+    blockedsessioncount = models.IntegerField(db_column='BlockedSessionCount', blank=True, null=True)  # Field name made lowercase.
+    instance = models.CharField(max_length=100, blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'WhoisactiveData'
+
+
+class AccountEmailaddress(models.Model):
+    email = models.CharField(unique=True, max_length=254)
+    verified = models.BooleanField()
+    primary = models.BooleanField()
+    user = models.ForeignKey('UsersUser', models.DO_NOTHING)
+
+    class Meta:
+        managed = False
+        db_table = 'account_emailaddress'
+
+
+class AccountEmailconfirmation(models.Model):
+    created = models.DateTimeField()
+    sent = models.DateTimeField(blank=True, null=True)
+    key = models.CharField(unique=True, max_length=64)
+    email_address = models.ForeignKey(AccountEmailaddress, models.DO_NOTHING)
+
+    class Meta:
+        managed = False
+        db_table = 'account_emailconfirmation'
+
+
+class AuthGroup(models.Model):
+    name = models.CharField(unique=True, max_length=80)
+
+    class Meta:
+        managed = False
+        db_table = 'auth_group'
+
+
+class AuthGroupPermissions(models.Model):
+    group = models.ForeignKey(AuthGroup, models.DO_NOTHING)
+    permission = models.ForeignKey('AuthPermission', models.DO_NOTHING)
+
+    class Meta:
+        managed = False
+        db_table = 'auth_group_permissions'
+        unique_together = (('group', 'permission'),)
+
+
+class AuthPermission(models.Model):
+    name = models.CharField(max_length=255)
+    content_type = models.ForeignKey('DjangoContentType', models.DO_NOTHING)
+    codename = models.CharField(max_length=100)
+
+    class Meta:
+        managed = False
+        db_table = 'auth_permission'
+        unique_together = (('content_type', 'codename'),)
+
+
+class Diskspace(models.Model):
+    systemname = models.CharField(db_column='SystemName', max_length=100, blank=True, null=True)  # Field name made lowercase.
+    name = models.CharField(max_length=100, blank=True, null=True)
+    label = models.CharField(max_length=100, blank=True, null=True)
+    drivetype = models.CharField(db_column='DriveType', max_length=100, blank=True, null=True)  # Field name made lowercase.
+    filesystem = models.CharField(db_column='Filesystem', max_length=100, blank=True, null=True)  # Field name made lowercase.
+    sizeingb = models.CharField(max_length=100, blank=True, null=True)
+    freeingb = models.CharField(max_length=100, blank=True, null=True)
+    percentfree = models.FloatField(blank=True, null=True)
+    insertdate = models.DateTimeField(db_column='InsertDate', blank=True, null=True)  # Field name made lowercase.
+
+    class Meta:
+        managed = False
+        db_table = 'diskspace'
+
+
+class DjangoAdminLog(models.Model):
+    action_time = models.DateTimeField()
+    object_id = models.TextField(blank=True, null=True)
+    object_repr = models.CharField(max_length=200)
+    action_flag = models.SmallIntegerField()
+    change_message = models.TextField()
+    content_type = models.ForeignKey('DjangoContentType', models.DO_NOTHING, blank=True, null=True)
+    user = models.ForeignKey('UsersUser', models.DO_NOTHING)
+
+    class Meta:
+        managed = False
+        db_table = 'django_admin_log'
+
+
+class DjangoContentType(models.Model):
+    app_label = models.CharField(max_length=100)
+    model = models.CharField(max_length=100)
+
+    class Meta:
+        managed = False
+        db_table = 'django_content_type'
+        unique_together = (('app_label', 'model'),)
+
+
+class DjangoMigrations(models.Model):
+    app = models.CharField(max_length=255)
+    name = models.CharField(max_length=255)
+    applied = models.DateTimeField()
+
+    class Meta:
+        managed = False
+        db_table = 'django_migrations'
+
+
+class DjangoSession(models.Model):
+    session_key = models.CharField(primary_key=True, max_length=40)
+    session_data = models.TextField()
+    expire_date = models.DateTimeField()
+
+    class Meta:
+        managed = False
+        db_table = 'django_session'
+
+
+class DjangoSite(models.Model):
+    domain = models.CharField(unique=True, max_length=100)
+    name = models.CharField(max_length=50)
+
+    class Meta:
+        managed = False
+        db_table = 'django_site'
+
+
+class LeadsLead(models.Model):
+    name = models.CharField(max_length=100)
+    email = models.CharField(max_length=254)
+    message = models.CharField(max_length=300)
+    created_at = models.DateTimeField()
+
+    class Meta:
+        managed = False
+        db_table = 'leads_lead'
+
+
+class Nodepairs(models.Model):
+    nodea = models.CharField(db_column='NodeA', max_length=100, blank=True, null=True)  # Field name made lowercase.
+    nodeb = models.CharField(db_column='NodeB', max_length=100, blank=True, null=True)  # Field name made lowercase.
+
+    class Meta:
+        managed = False
+        db_table = 'nodepairs'
+
+
+class Objectstable(models.Model):
+    name = models.CharField(max_length=128)
+    id = models.IntegerField()
+    xtype = models.CharField(max_length=2)
+    uid = models.SmallIntegerField(blank=True, null=True)
+    info = models.SmallIntegerField(blank=True, null=True)
+    status = models.IntegerField(blank=True, null=True)
+    base_schema_ver = models.IntegerField(blank=True, null=True)
+    replinfo = models.IntegerField(blank=True, null=True)
+    parent_obj = models.IntegerField()
+    crdate = models.DateTimeField()
+    ftcatid = models.SmallIntegerField(blank=True, null=True)
+    schema_ver = models.IntegerField(blank=True, null=True)
+    stats_schema_ver = models.IntegerField(blank=True, null=True)
+    type = models.CharField(max_length=2, blank=True, null=True)
+    userstat = models.SmallIntegerField(blank=True, null=True)
+    sysstat = models.SmallIntegerField(blank=True, null=True)
+    indexdel = models.SmallIntegerField(blank=True, null=True)
+    refdate = models.DateTimeField()
+    version = models.IntegerField(blank=True, null=True)
+    deltrig = models.IntegerField(blank=True, null=True)
+    instrig = models.IntegerField(blank=True, null=True)
+    updtrig = models.IntegerField(blank=True, null=True)
+    seltrig = models.IntegerField(blank=True, null=True)
+    category = models.IntegerField(blank=True, null=True)
+    cache = models.SmallIntegerField(blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'objectstable'
+
+
+class Servernametest(models.Model):
+    xx = models.CharField(max_length=128, blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'servernametest'
+
+
+class SocialaccountSocialaccount(models.Model):
+    provider = models.CharField(max_length=30)
+    uid = models.CharField(max_length=191)
+    last_login = models.DateTimeField()
+    date_joined = models.DateTimeField()
+    extra_data = models.TextField()
+    user = models.ForeignKey('UsersUser', models.DO_NOTHING)
+
+    class Meta:
+        managed = False
+        db_table = 'socialaccount_socialaccount'
+        unique_together = (('provider', 'uid'),)
+
+
+class SocialaccountSocialapp(models.Model):
+    provider = models.CharField(max_length=30)
+    name = models.CharField(max_length=40)
+    client_id = models.CharField(max_length=191)
+    secret = models.CharField(max_length=191)
+    key = models.CharField(max_length=191)
+
+    class Meta:
+        managed = False
+        db_table = 'socialaccount_socialapp'
+
+
+class SocialaccountSocialappSites(models.Model):
+    socialapp = models.ForeignKey(SocialaccountSocialapp, models.DO_NOTHING)
+    site = models.ForeignKey(DjangoSite, models.DO_NOTHING)
+
+    class Meta:
+        managed = False
+        db_table = 'socialaccount_socialapp_sites'
+        unique_together = (('socialapp', 'site'),)
+
+
+class SocialaccountSocialtoken(models.Model):
+    token = models.TextField()
+    token_secret = models.TextField()
+    expires_at = models.DateTimeField(blank=True, null=True)
+    account = models.ForeignKey(SocialaccountSocialaccount, models.DO_NOTHING)
+    app = models.ForeignKey(SocialaccountSocialapp, models.DO_NOTHING)
+
+    class Meta:
+        managed = False
+        db_table = 'socialaccount_socialtoken'
+        unique_together = (('app', 'account'),)
+
+
+class SqlreportsAppointment(models.Model):
+    date = models.DateField(blank=True, null=True)
+    time = models.TimeField(blank=True, null=True)
+    name = models.CharField(max_length=500)
+    collection_address = models.TextField()
+    delivery_address = models.TextField()
+    storage = models.TextField()
+    description = models.TextField()
+    created = models.DateTimeField()
+    updated = models.DateTimeField()
+    booked_by = models.ForeignKey('UsersUser', models.DO_NOTHING, blank=True, null=True)
+    van = models.ForeignKey('SqlreportsVan', models.DO_NOTHING, blank=True, null=True)
+    porters = models.TextField()
+    phone = models.CharField(max_length=100, blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'sqlreports_appointment'
+
+
+class SqlreportsVan(models.Model):
+    title = models.CharField(max_length=500)
+    created = models.DateField()
+    updated = models.DateField()
+    status = models.BooleanField()
+
+    class Meta:
+        managed = False
+        db_table = 'sqlreports_van'
+
+
+class T5(models.Model):
+    s = models.CharField(max_length=10, blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 't5'
+
+
+class Test(models.Model):
+    id = models.IntegerField(blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'test'
+
+
+class UsersUser(models.Model):
+    password = models.CharField(max_length=128)
+    last_login = models.DateTimeField(blank=True, null=True)
+    is_superuser = models.BooleanField()
+    username = models.CharField(unique=True, max_length=150)
+    first_name = models.CharField(max_length=30)
+    last_name = models.CharField(max_length=150)
+    email = models.CharField(max_length=254)
+    is_staff = models.BooleanField()
+    is_active = models.BooleanField()
+    date_joined = models.DateTimeField()
+    name = models.CharField(max_length=255)
+
+    class Meta:
+        managed = False
+        db_table = 'users_user'
+
+
+class UsersUserGroups(models.Model):
+    user = models.ForeignKey(UsersUser, models.DO_NOTHING)
+    group = models.ForeignKey(AuthGroup, models.DO_NOTHING)
+
+    class Meta:
+        managed = False
+        db_table = 'users_user_groups'
+        unique_together = (('user', 'group'),)
+
+
+class UsersUserUserPermissions(models.Model):
+    user = models.ForeignKey(UsersUser, models.DO_NOTHING)
+    permission = models.ForeignKey(AuthPermission, models.DO_NOTHING)
+
+    class Meta:
+        managed = False
+        db_table = 'users_user_user_permissions'
+        unique_together = (('user', 'permission'),)

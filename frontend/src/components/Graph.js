@@ -4,17 +4,18 @@ import PropTypes from "prop-types";
 
 
 
-const Graph = ({ data }) =>
+const Graph = ({ data, layout }) =>
   !data.length ? (
     <p>Nothing to show</p>
   ) : ( <Plot
         data={data}
-        layout={ {width: 1000, height: 800, title: 'A Fancy Plot'}}
+        layout={layout}
       />
   );
 
 Graph.propTypes = {
-  data: PropTypes.array.isRequired
+  data: PropTypes.array.isRequired,
+  layout:PropTypes.object.isRequired
 };
 
 export default Graph;

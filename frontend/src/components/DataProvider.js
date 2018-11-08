@@ -6,6 +6,9 @@ class DataProvider extends Component {
     endpoint: PropTypes.string.isRequired,
     render: PropTypes.func.isRequired
   };
+  constructor(props) {
+        super(props);
+               }
 
   state = {
       data: [],
@@ -14,6 +17,7 @@ class DataProvider extends Component {
     };
 
   componentDidMount() {
+      console.log("xxx");
     fetch(this.props.endpoint)
       .then(response => {
         if (response.status !== 200) {

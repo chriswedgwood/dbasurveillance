@@ -1,1 +1,1 @@
-import App from "./components/App";
+import DashBoard from "./components/DashBoard";
