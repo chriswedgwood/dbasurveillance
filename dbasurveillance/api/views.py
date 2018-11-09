@@ -12,7 +12,7 @@ from .serializers import SqlCounterSerializer,SqlInstanceSerializer
 from django.http import JsonResponse
 import pandas as pd
 conn = pyodbc.connect(settings.PANDAS_CONNECTION_STRING)
-
+from datetime import datetime, timedelta
 
 class SqlCounterList(generics.ListAPIView):
 
@@ -112,4 +112,63 @@ class SqlCounterStatsView(View):
                 trace["y"] = list(df_counter["Value"])
                 data.append(trace)
 
+        return JsonResponse(data, safe=False)
+
+
+class WaitStatsView(View):
+
+    def get(self, request, instance_key):
+        data = []
+
+        sql = '''SELECT   A.Capturedate CaptureDateTime,B.WaitStat,CASt(Round((A.waitms*1.0/SQ.TotalWaitMs*1.0)*100,0) as INT) WaitPercentAge
+                              FROM [DBADW].[dbo].[FactWaitStats] A
+                              JOIn [DBADW].[dbo].[DimWaitStats] B ON B.WaitStatsKey=A.WaitStatsKey
+                              LEFT JOIN (  select capturedate,InstanceKey, SUM([WaitMs]) TotalWaitMs
+                              FROM [DBADW].[dbo].[FactWaitStats] A
+                              GROUP By  capturedate,InstanceKey) SQ
+                              ON SQ.capturedate=A.capturedate and SQ.InstanceKey = A.InstanceKey
+                              WHERE A.InstanceKey = ?
+                              order by A.capturedate desc'''
+        params = [instance_key]
+        df = pd.read_sql_query(sql=sql, con=conn, params=params)
+
+       # df.columns = [columns[0] for columns in cursor.description]
+        df["CaptureDateTime"] = df['CaptureDateTime'].apply(lambda x: x.strftime('%Y-%m-%d %H:%M:%S'))
+        capture_date_times = df.CaptureDateTime.unique()
+        waits = df.WaitStat.unique()
+        for wait in waits:
+            df_waits = df.loc[df['WaitStat'] == wait]
+            trace = {"type": 'bar', "name": wait}
+            trace["x"] = list(df_waits['CaptureDateTime'])
+            trace["y"] = list(df_waits['WaitPercentAge'])
+            data.append(trace)
+        return JsonResponse(data, safe=False)
+
+
+class WhoIsActiveView(View):
+
+    def rounded_to_the_last_5_minute_epoch(self, date_in):
+        rounded = date_in - (date_in - datetime.min) % timedelta(minutes=5)
+        return rounded
+
+    def get(self, request):
+        date = request.GET['date']
+        instance_key = request.GET['instance_key']
+        data = []
+        if len(date) > 16:
+            date_time_in = datetime.strptime(date, "%Y-%m-%d %H:%M:%S")
+        else:
+            date += ':00'
+            date_time_in = datetime.strptime(date, "%Y-%m-%d %H:%M:%S")
+
+        date_to_5 = self.rounded_to_the_last_5_minute_epoch(date_time_in)
+        sql = '''SELECT REPLACE(REPLACE(ParentSqlText,'<?query --',''),'--?>','') ParentSqlText, REPLACE(REPLACE(SqlText,'<?query --',''),'--?>','')  
+                              SqlText,F.CaptureDatetime,F.cnt, [max_cpu], [max_tempdb], [reads], [writes], [physical_reads], [BlockedSessionCount] 
+                              FROM [DBADW].[dbo].[FactWhoIsActive] F JOIN [DBADW].[dbo].[DimWhoIsActive] D
+                              On F.Whokey = D.Whokey
+                              WHERE InstanceKey=? and  CaptureDateTime = ? '''
+
+        params = [instance_key, date_to_5]
+        df = pd.read_sql_query(sql=sql, con=conn, params=params)
+        data.append(list(df.values.tolist()))
         return JsonResponse(data, safe=False)

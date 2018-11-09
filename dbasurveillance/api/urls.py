@@ -9,7 +9,10 @@ urlpatterns = [
     path('react-select-sql-counters', views.SqlCounterList.as_view()),
     path('instances/', views.SqlInstanceList.as_view()),
     path('cpu/<int:instance_key>', views.CpuView.as_view()),
+    path('waitstats/<int:instance_key>', views.WaitStatsView.as_view()),
     path("sqlcounters/<int:instance_key>/", view=views.SqlCounterStatsView.as_view()),
+    path("whoisactive/", view=views.WhoIsActiveView.as_view()),
+
 ]
 
 
