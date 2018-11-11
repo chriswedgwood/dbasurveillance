@@ -18,6 +18,8 @@ database = 'golfcapture'
 username = 'sa'
 password = 'g0lfc@pture'
 
+print('xxxxxxyyyyyyyzzzzzz')
+
 try:
     cnxn = pyodbc.connect('DRIVER={ODBC Driver 13 for SQL Server};SERVER='+server+';PORT=1433;DATABASE=master;UID='+username+';PWD='+ password)
     cnxn.autocommit = True

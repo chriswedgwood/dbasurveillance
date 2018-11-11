@@ -2,10 +2,12 @@ import Plot from 'react-plotly.js';
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import Modal from 'react-modal';
-
+import axios from 'axios';
 
 const customStyles = {
   content : {
+      height: '500px',
+    width: '85%',
     top                   : '50%',
     left                  : '50%',
     right                 : 'auto',
@@ -22,7 +24,8 @@ class Graph extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            modalIsOpen:false
+            modalIsOpen:false,
+            data:null
         }
         this.handlePlotlyClick = this.handlePlotlyClick.bind(this);
          this.openModal = this.openModal.bind(this);
@@ -31,21 +34,41 @@ class Graph extends Component {
     }
 
     handlePlotlyClick(data){
-      console.log('handlePlotlyClick - Dashboard');
-      console.log('A');
-      console.log(data);
-    console.log('B');
+    //  console.log('handlePlotlyClick - Dashboard');
+
 
      let pts = '';
           let whoIsActiveDateTime = '';
+          let instanceKey = 1;
           for (let i = 0; i < data.points.length; i++) {
             pts = 'x = ' + data.points[i].x + '\ny = ' +
               data.points[i].y.toPrecision(4) + '\n\n';
             whoIsActiveDateTime = data.points[i].x;
-          }
-          console.log(whoIsActiveDateTime);
+            instanceKey = data.points[i].customdata;
 
-          this.setState({modalIsOpen: true});
+          }
+
+        console.log(whoIsActiveDateTime);
+          console.log(instanceKey);
+
+
+
+          axios.get('/api/whoisactive', {
+           params: {
+            date:whoIsActiveDateTime,instance_key:instanceKey
+                }
+              })
+              .then(response => {
+
+
+                this.setState({modalIsOpen: true,data:response.data});
+
+
+              })
+              .catch((error)=>{
+       console.log(error);
+    });
+
   }
 
   openModal() {
@@ -65,13 +88,24 @@ class Graph extends Component {
     this.setState({modalIsOpen: false});
   }
 
+
+
    render() {
+
+        const data = this.state.data;
+
+        const rows = data.map((row) =>
+            <tr><td>{row[0]}</td></tr>
+);
+
+
         return (
            <div>
             <Plot
         data={this.props.data}
         layout={this.props.layout}
         onClick={this.handlePlotlyClick}
+        className='classddddclass'
             />
            <div>
             <Modal
@@ -80,18 +114,12 @@ class Graph extends Component {
           onRequestClose={this.closeModal}
           style={customStyles}
           contentLabel="Example Modal"
-        >
+            >
 
           <h2 ref={subtitle => this.subtitle = subtitle}>Hello</h2>
             <button onClick={this.closeModal}>close</button>
-          <div>I am a modal</div>
-          <form>
-            <input />
-            <button>tab navigation</button>
-            <button>stays</button>
-            <button>inside</button>
-            <button>the modal</button>
-          </form>
+          <div>I am a modal2</div>
+<table>{rows}</table>
         </Modal>
           </div>
            </div>

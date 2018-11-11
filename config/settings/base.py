@@ -43,10 +43,10 @@ DATABASES = {
     'default': {
         'ENGINE': 'sql_server.pyodbc',
         'NAME': 'DBADW',
-        'USER': 'dbadw',
-        'PASSWORD': 'dbadw',
-        'HOST': 'localhost\sql2017',
-        'PORT': '1436',
+        'USER': 'sa',
+        'PASSWORD': 'g0lfc@pture',
+        'HOST': 'mssql',
+        'PORT': '1433',
 
         'OPTIONS': {
             'driver': 'ODBC Driver 13 for SQL Server',
@@ -271,3 +271,7 @@ CORS_ORIGIN_WHITELIST = (
     '127.0.0.1:8000',
     '127.0.0.1:3000',
 )
+
+
+#PANDAS_CONNECTION_STRING = 'DRIVER={ODBC Driver 13 for SQL Server};SERVER=localhost\sql2017;DATABASE=DBADW;Trusted_Connection=yes;'
+PANDAS_CONNECTION_STRING = 'DRIVER={ODBC Driver 13 for SQL Server};SERVER=mssql;DATABASE=DBADW;UID=sa;PWD=g0lfc@pture'

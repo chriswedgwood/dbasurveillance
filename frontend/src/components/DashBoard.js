@@ -47,7 +47,7 @@ class DashBoard extends React.Component {
 
   render() {
     const isSelectedOption = this.state.selectedOption;
-    const  lo  = {width: 1000, height: 800, title: 'CPU'};
+    const  lo  = {width: 1000, height: 800, title: 'CppU',xxx:'xxx'};
     const  lo2  = {width: 1000, height: 800, title: 'SC'};
 
     return (

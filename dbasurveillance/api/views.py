@@ -43,6 +43,7 @@ class CpuView(View):
             frames.append(df)
 
         df_results = pd.concat(frames)
+        df_results['customdata'] = instance_key
         windows = list(df_results.Trace.unique())
 
         x_column = 'TimeMins'
@@ -55,10 +56,11 @@ class CpuView(View):
             df_window = df_results[df_results['Trace'] == window]
 
             for i, column in enumerate(df_window):
-                if i >= 3:
+                if i >= 3 and column != 'customdata':
                     trace = {"type": 'line', "mode": "lines", "name": column + window}
                     trace["x"] = list(df_window[x_column])
                     trace["y"] = list(df_window[column])
+                    trace["customdata"] = list(df_results['customdata'])
 
 
                     data.append(trace)

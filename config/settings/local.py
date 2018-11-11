@@ -63,4 +63,4 @@ INSTALLED_APPS += ['django_extensions']  # noqa F405
 # Your stuff...
 # ------------------------------------------------------------------------------
 
-PANDAS_CONNECTION_STRING = 'DRIVER={ODBC Driver 13 for SQL Server};SERVER=localhost\sql2017;DATABASE=DBADW;Trusted_Connection=yes;'
+

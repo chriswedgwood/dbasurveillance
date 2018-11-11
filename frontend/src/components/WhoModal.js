@@ -57,7 +57,7 @@ class WhoModal extends React.Component {
 
           <h2 ref={subtitle => this.subtitle = subtitle}>Hello</h2>
           <button onClick={this.closeModal}>close</button>
-          <div>I am a modal</div>
+          <div>I am a modalee</div>
           <form>
             <input />
             <button>tab navigation</button>
