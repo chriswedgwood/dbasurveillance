@@ -43,17 +43,16 @@ DATABASES = {
     'default': {
         'ENGINE': 'sql_server.pyodbc',
         'NAME': 'DBADW',
-        'USER': 'sa',
-        'PASSWORD': 'g0lfc@pture',
-        'HOST': 'mssql',
-        'PORT': '1433',
+        'USER': 'dbadw',
+        'PASSWORD': 'dbadw',
+        'HOST': 'localhost\sql2017',
+        'PORT': '1436',
 
         'OPTIONS': {
             'driver': 'ODBC Driver 13 for SQL Server',
         },
     },
 }
-print(DATABASES)
 # URLS
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#root-urlconf
@@ -273,5 +272,5 @@ CORS_ORIGIN_WHITELIST = (
 )
 
 
-#PANDAS_CONNECTION_STRING = 'DRIVER={ODBC Driver 13 for SQL Server};SERVER=localhost\sql2017;DATABASE=DBADW;Trusted_Connection=yes;'
-PANDAS_CONNECTION_STRING = 'DRIVER={ODBC Driver 13 for SQL Server};SERVER=mssql;DATABASE=DBADW;UID=sa;PWD=g0lfc@pture'
+PANDAS_CONNECTION_STRING = 'DRIVER={ODBC Driver 13 for SQL Server};SERVER=localhost\sql2017;DATABASE=DBADW;Trusted_Connection=yes;'
+#PANDAS_CONNECTION_STRING = 'DRIVER={ODBC Driver 13 for SQL Server};SERVER=mssql;DATABASE=DBADW;UID=sa;PWD=g0lfc@pture'

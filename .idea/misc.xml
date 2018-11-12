@@ -3,5 +3,5 @@
   <component name="JavaScriptSettings">
     <option name="languageLevel" value="JSX" />
   </component>
-  <component name="ProjectRootManager" version="2" project-jdk-name="Remote Python 3.6.7 Docker Compose (django at [/Users/chriswedgwood/DjangoProjects/dbasurveillance/local.yml])" project-jdk-type="Python SDK" />
+  <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.6 (dbasurveillance)" project-jdk-type="Python SDK" />
 </project>

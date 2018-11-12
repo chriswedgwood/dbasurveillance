@@ -5,6 +5,8 @@ import Graph from "./Graph";
 import Select from 'react-select'
 import SqlCountersGraph from "./SqlCountersGraph";
 import ServerDropDown from './ServerDropDown'
+import '../../../node_modules/bootstrap/dist/css/bootstrap.css';
+import '../../../node_modules/react-bootstrap-table/dist/react-bootstrap-table-all.min.css';
 
 class DashBoard extends React.Component {
   constructor(props) {

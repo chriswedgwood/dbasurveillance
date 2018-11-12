@@ -164,7 +164,7 @@ class WhoIsActiveView(View):
             date_time_in = datetime.strptime(date, "%Y-%m-%d %H:%M:%S")
 
         date_to_5 = self.rounded_to_the_last_5_minute_epoch(date_time_in)
-        sql = '''SELECT REPLACE(REPLACE(ParentSqlText,'<?query --',''),'--?>','') ParentSqlText, REPLACE(REPLACE(SqlText,'<?query --',''),'--?>','')  
+        sql = '''SELECT top 2 REPLACE(REPLACE(ParentSqlText,'<?query --',''),'--?>','') ParentSqlText, REPLACE(REPLACE(SqlText,'<?query --',''),'--?>','')  
                               SqlText,F.CaptureDatetime,F.cnt, [max_cpu], [max_tempdb], [reads], [writes], [physical_reads], [BlockedSessionCount] 
                               FROM [DBADW].[dbo].[FactWhoIsActive] F JOIN [DBADW].[dbo].[DimWhoIsActive] D
                               On F.Whokey = D.Whokey
