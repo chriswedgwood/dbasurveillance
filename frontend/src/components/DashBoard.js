@@ -49,8 +49,9 @@ class DashBoard extends React.Component {
 
   render() {
     const isSelectedOption = this.state.selectedOption;
-    const  lo  = {width: 1000, height: 800, title: 'CppU',xxx:'xxx'};
-    const  lo2  = {width: 1000, height: 800, title: 'SC'};
+    const  lo  = {width: 1000, height: 800, title: 'CPU'};
+    const  lo2  = {width: 1000, height: 800, title: 'Sql Counters'};
+    const  lo3  = {width: 1000, height: 800, title: 'Wait Statistics'};
 
     return (
 
@@ -71,7 +72,7 @@ class DashBoard extends React.Component {
         />
         <DataProvider key={'waits_'+this.state.selectedOption.value}
           endpoint={this.state.waitsEndPoint}
-          render={data => <Graph data={data} layout={lo}  />}
+          render={data => <Graph data={data} layout={lo3}  />}
         />
 
 

@@ -106,14 +106,18 @@ class Graph extends Component {
     const data = this.state.data;
 
     if (data !== null) {
-      console.log("A");
-      console.log(data);
-      console.log("B");
+
       data.map((row, index) =>
+
         table_data.push({
           ParentSqlText: row[0],
           SqlText: row[1],
-          CaptureDatetime: row[2]
+          CaptureDatetime: row[2],
+          Count: row[3],
+            Cpu: row[4],
+            Tempdb: row[5],
+            Reads: row[6],Writes: row[7],PhysicalReads: row[8],
+            Blocks:row[9]
         })
       );
     }
@@ -124,7 +128,7 @@ class Graph extends Component {
           data={this.props.data}
           layout={this.props.layout}
           onClick={this.handlePlotlyClick}
-          className="classddddclass"
+
         />
         <div>
           <Modal
@@ -137,7 +141,7 @@ class Graph extends Component {
             <div>
               <BootstrapTable data={table_data} version="4">
                 <TableHeaderColumn
-                  width="33%"
+                  width="22%"
                   isKey
                   dataField="ParentSqlText"
                   tdStyle={{ whiteSpace: "normal" }}
@@ -145,30 +149,41 @@ class Graph extends Component {
                   ParentSqlText
                 </TableHeaderColumn>
                 <TableHeaderColumn
-                  width="33%"
+                  width="22%"
                   dataField="SqlText"
                   tdStyle={{ whiteSpace: "normal" }}
                 >
                   SqlText
                 </TableHeaderColumn>
-                <TableHeaderColumn width="33%" dataField="CaptureDatetime">
+                <TableHeaderColumn width="11%" dataField="CaptureDatetime">
                   CaptureDatetime
+                </TableHeaderColumn>
+                <TableHeaderColumn width="5%" dataField="Count">
+                  Count
+                </TableHeaderColumn>
+                <TableHeaderColumn width="5%" dataField="Cpu">
+                  Cpu
+                </TableHeaderColumn>
+                <TableHeaderColumn width="5%" dataField="Tempdb">
+                  Tempdb
+                </TableHeaderColumn>
+                <TableHeaderColumn width="5%" dataField="Reads">
+                  Reads
+                </TableHeaderColumn>
+                <TableHeaderColumn width="5%" dataField="Writes">
+                  Writes
+                </TableHeaderColumn>
+                <TableHeaderColumn width="5%" dataField="PhysicalReads">
+                  PhysicalReads
+                </TableHeaderColumn>
+                <TableHeaderColumn width="5%" dataField="Blocks">
+                  Blocks
                 </TableHeaderColumn>
               </BootstrapTable>
             </div>
           </Modal>
           <pre>
-            <code className="language-javascript">
-              {`
-    onSubmit(e) {
-      e.preventDefault();
-      const job = {
-        title: 'Developer',
-        company: 'Facebook'
-        };
-      }
-  `}
-            </code>
+
           </pre>
         </div>
       </div>

@@ -11,7 +11,7 @@ from .models import SqlCounter, SqlInstance
 from .serializers import SqlCounterSerializer,SqlInstanceSerializer
 from django.http import JsonResponse
 import pandas as pd
-conn = pyodbc.connect(settings.PANDAS_CONNECTION_STRING)
+
 from datetime import datetime, timedelta
 
 class SqlCounterList(generics.ListAPIView):
@@ -121,8 +121,8 @@ class WaitStatsView(View):
 
     def get(self, request, instance_key):
         data = []
-
-        sql = '''SELECT   A.Capturedate CaptureDateTime,B.WaitStat,CASt(Round((A.waitms*1.0/SQ.TotalWaitMs*1.0)*100,0) as INT) WaitPercentAge
+        conn = pyodbc.connect(settings.PANDAS_CONNECTION_STRING)
+        sql = '''SELECT   A.Capturedate CaptureDateTime,B.WaitStat,CASt(Round((A.waitms*1.0/(SQ.TotalWaitMs+0.00001)*1.0)*100,0) as INT) WaitPercentAge
                               FROM [DBADW].[dbo].[FactWaitStats] A
                               JOIn [DBADW].[dbo].[DimWaitStats] B ON B.WaitStatsKey=A.WaitStatsKey
                               LEFT JOIN (  select capturedate,InstanceKey, SUM([WaitMs]) TotalWaitMs
@@ -154,6 +154,7 @@ class WhoIsActiveView(View):
         return rounded
 
     def get(self, request):
+        conn = pyodbc.connect(settings.PANDAS_CONNECTION_STRING)
         date = request.GET['date']
         instance_key = request.GET['instance_key']
         data = []
