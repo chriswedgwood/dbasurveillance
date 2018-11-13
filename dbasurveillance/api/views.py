@@ -134,7 +134,8 @@ class WaitStatsView(View):
         params = [instance_key]
         df = pd.read_sql_query(sql=sql, con=conn, params=params)
 
-       # df.columns = [columns[0] for columns in cursor.description]
+       # df.columns = [columns[0] for columns in cursor.descript
+        # ion]
         df["CaptureDateTime"] = df['CaptureDateTime'].apply(lambda x: x.strftime('%Y-%m-%d %H:%M:%S'))
         capture_date_times = df.CaptureDateTime.unique()
         waits = df.WaitStat.unique()
